@@ -1,0 +1,24 @@
+<form (ngSubmit)="onSubmit(); loginForm.reset()" #loginForm="ngForm">
+  <div id="loginCard" class="card bg-dark">
+    <div class="card-header bg-primary">
+      <h5 class="card-title text-white"><span class="fa fa-sign-in"></span> Authentication</h5>
+    </div>
+    <div class="card-body">
+      <div class="form-row mb-2">
+        <div class="input-group">
+          <div class="input-group-prepend w-33"><div class="input-group-text bg-secondary text-white">Username</div></div>
+          <input type="text" class="form-control" id="username" name="username" required [(ngModel)]="authRequest.username" #usernameControl="ngModel" #username>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <div class="input-group-prepend w-33"><div class="input-group-text bg-secondary text-white">Password</div></div>
+          <input type="password" class="form-control" id="password" name="password" required [(ngModel)]="authRequest.password" #passwordControl="ngModel" #password>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-secondary">
+      <button class="btn btn-primary btn-grow pull-right" [disabled]="!loginForm.form.valid"><span class="fa fa-sign-in"></span> Login</button>
+    </div>
+  </div>
+</form>

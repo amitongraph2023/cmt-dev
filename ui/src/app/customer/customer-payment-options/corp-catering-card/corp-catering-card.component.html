@@ -1,0 +1,167 @@
+<div class="card text-primary bg-white mb-3">
+  <form #f="ngForm">
+    <div class="card-header pt-1 pb-1">
+      <div class="card-title" >
+        {{corporateCateringAccount.ccaBillingName}}
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group more-padding">
+          <label for="ccaBillingName">Billing Name</label>
+          <input #ccaBillingName="ngModel" type="text" class="form-control" id="ccaBillingName"
+                 required
+                 [readonly]="!(edit)"
+                 [(ngModel)]="corporateCateringAccount.ccaBillingName" name="ccaBillingName">
+          <div *ngIf="(ccaBillingName.dirty) && !ccaBillingName.valid && ccaBillingName?.errors.required" [ngClass] = "'error'">
+            Billing name is required
+          </div>
+        </div>
+
+        <div class="form-group more-padding">
+          <label for="ccaNumber">CCA Number</label>
+          <input #ccaNumber="ngModel" type="text" class="form-control" id="ccaNumber"
+                 required
+                 [readonly]="!(edit)"
+                 [(ngModel)]="corporateCateringAccount.ccaNumber" name="ccaNumber">
+          <div *ngIf="(ccaNumber.dirty) && !ccaNumber.valid && ccaNumber?.errors.required" [ngClass] = "'error'">
+            CCA Number is required
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="addressLine1">Address Line 1</label>
+        <input #addressLine1="ngModel" type="text" class="form-control" id="addressLine1"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="corporateCateringAccount.addressLine1" name="addressLine1">
+        <div *ngIf="(addressLine1.dirty) && !addressLine1.valid && addressLine1?.errors.required" [ngClass] = "'error'">
+          Address line 1 is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="addressLine2">Address Line 2</label>
+        <input #addressLine2="ngModel" type="text" class="form-control" id="addressLine2"
+               [readonly]="!(edit)"
+               [(ngModel)]="corporateCateringAccount.addressLine2" name="addressLine2">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input #city="ngModel" type="text" class="form-control" id="city"
+                 required
+                 [readonly]="!(edit)"
+                 [(ngModel)]="corporateCateringAccount.city" name="city">
+          <div *ngIf="(city.dirty) && !city.valid && city?.errors.required" [ngClass] = "'error'">
+            City is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="state">State</label>
+          <input #state="ngModel" type="text" class="form-control" id="state"
+                 required
+                 [readonly]="!(edit)"
+                 [(ngModel)]="corporateCateringAccount.state" name="state">
+          <div *ngIf="(state.dirty) && !state.valid && state?.errors.required" [ngClass] = "'error'">
+            State is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="zipCode">Zip Code</label>
+          <input #zipCode="ngModel" type="text" class="form-control" id="zipCode"
+                 required
+                 [readonly]="!(edit)"
+                 [(ngModel)]="corporateCateringAccount.zipCode" name="zipCode">
+          <div *ngIf="(zipCode.dirty) && !zipCode.valid && zipCode?.errors.required" [ngClass] = "'error'">
+            Zip code is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input #country="ngModel" type="text" class="form-control" id="country"
+                 required
+                 [readonly]="!(edit)"
+                 [(ngModel)]="corporateCateringAccount.country" name="country">
+          <div *ngIf="(country.dirty) && !country.valid && country?.errors.required" [ngClass] = "'error'">
+            Country is required
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="orgNumber">Org Number</label>
+        <input #orgNumber="ngModel" type="text" class="form-control" id="orgNumber"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="corporateCateringAccount.orgNumber" name="orgNumber">
+        <div *ngIf="(orgNumber.dirty) && !orgNumber.valid && orgNumber?.errors.required" [ngClass] = "'error'">
+          Org number is required
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group more-padding">
+          <label for="onlineEnabled">
+            <input
+              type="checkbox"
+              id="onlineEnabled"
+              [disabled]="!(edit)"
+              [checked]=" corporateCateringAccount.onlineEnabled"
+            >
+            Online Enabled</label>
+        </div>
+
+        <div class="form-group more-padding">
+          <label for="poRequired">
+            <input
+              type="checkbox"
+              id="poRequired"
+              [disabled]="!(edit)"
+              [checked]=" corporateCateringAccount.poRequired"
+            >
+            PO Required</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group more-padding">
+          <label for="clientStartDate">Client Start Date</label>
+          <input #clientStartDate="ngModel" type="text" class="form-control" id="clientStartDate"
+                 required
+                 [readonly]="!(edit)"
+                 [ngModel]="corporateCateringAccount.clientStartDate" name="clientStartDate">
+        </div>
+
+        <div class="form-group more-padding">
+          <label for="clientEndDate">Client End Date</label>
+          <input #clientEndDate="ngModel" type="text" class="form-control" id="clientEndDate"
+                 [readonly]="!(edit)"
+                 [ngModel]="corporateCateringAccount.clientEndDate" name="clientEndDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group more-padding">
+          <label for="orgStartDate">Org Start Date</label>
+          <input #orgStartDate="ngModel" type="text" class="form-control" id="orgStartDate"
+                 required
+                 [readonly]="!(edit)"
+                 [ngModel]="corporateCateringAccount.orgStartDate " name="orgStartDate">
+        </div>
+
+        <div class="form-group more-padding">
+          <label for="orgEndDate">Org End Date</label>
+          <input #orgEndDate="ngModel" type="text" class="form-control" id="orgEndDate"
+                 [readonly]="!(edit)"
+                 [ngModel]="corporateCateringAccount.orgEndDate " name="orgEndDate">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

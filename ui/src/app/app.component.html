@@ -1,0 +1,71 @@
+<app-catering-redirect *ngIf="showCateringRedirect"></app-catering-redirect>
+
+<div *ngIf="!showCateringRedirect" >
+  <div class="wrapper">
+    <app-navbar [appRoute]="appRoute" *ngIf="appRoute.indexOf('login') === -1"></app-navbar>
+    <div id="content" [class.collapsed]="collapsed" [class.login]="appRoute.indexOf('login') > -1" [@routerTransition]="getRouteAnimation(route)">
+      <div *ngIf="!isSpoofing" class="sticky-top"><app-customer-search *ngIf="appRoute.indexOf('login') === -1"></app-customer-search></div>
+      <router-outlet #route="outlet"></router-outlet>
+    </div>
+  </div>
+  <div id="backdrop" [class.active]="showBackdrop" (click)="backdropClick()">
+    <div class="circle-outer" *ngIf="isLoading"></div>
+    <div class="circle-inner" *ngIf="isLoading"></div>
+    <h1 class="loading-text">Loading<span>.</span><span>.</span><span>.</span></h1>
+  </div>
+  <div id="errorCard" [class.active]="error" *ngIf="error">
+    <div class="card text-white bg-danger">
+      <div class="card-header">
+        <h5 class="card-title"><span class="fa fa-exclamation-triangle"></span> An Error Has Occurred</h5>
+      </div>
+      <div class="card-body bg-white text-dark">
+        <span *ngIf="!error.error">Error(s):</span>
+        <ul class="error-list" *ngIf="error.errors && error.errors.length > 0">
+          <li *ngFor="let err of error.errors">
+            {{err.description | sentencecase}}
+          </li>
+        </ul>
+        <span *ngIf="!error.errors && !error.error">{{error}}</span>
+        <span *ngIf="!error.errors && error.error">{{error.error}}: {{error.message}}</span>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-sm btn-primary btn-grow pull-right" (click)="closeErrorCard()"><span class="fa fa-close"></span> Ok</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="timeoutModal" tabindex="-1" role="dialog" aria-hidden="true" #timeoutModal>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info">
+          <h5 class="modal-title"><i class="fa fa-clock-o"></i> Session Timeout</h5>
+        </div>
+        <div class="modal-body bg-white text-dark">
+          <h6 *ngIf="minutes === 0">Your session will expire in <span class="clock-face">{{ticks}}</span> seconds unless you continue.</h6>
+          <h6 *ngIf="minutes !== 0">Your session will expire in <span class="clock-face">{{minutes}}:{{seconds | number : '2.0-0'}}</span> unless you continue.</h6>
+        </div>
+        <div class="modal-footer bg-secondary">
+          <button type="button" class="btn btn-danger" (click)="onLogoutClick()"><i class="fa fa-sign-out"></i> Logout</button>
+          <button type="button" class="btn btn-success" (click)="onContinueClick()"><i class="fa fa-sign-in"></i> Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="timedoutModal" tabindex="-1" role="dialog" aria-hidden="true" #timedoutModal>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><i class="fa fa-clock-o"></i> Session Timed Out</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <h6>Your session has expired due to inactivity.</h6>
+      </div>
+      <div class="modal-footer bg-secondary">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close"><i class="fa fa-close"></i> OK</button>
+      </div>
+    </div>
+  </div>
+</div>

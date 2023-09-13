@@ -1,0 +1,28 @@
+<h1 >Search Gift Coffee Subscriptions</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <form (ngSubmit)="search()" #searchUserForm="ngForm">
+      <div class="row">
+        <div class="col-sm-6 form-group">
+                <span>
+                  <input type="text" id="searchValue" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+                </span>
+        </div>
+        <div class="col-sm-3 form-group float-right">
+          <select name="searchType" id="searchType" class="form-control"  [(ngModel)]="searchType" >
+            <option *ngFor="let type of searchTypes.key()" [value]="type.toString()">{{type}}</option>
+          </select>
+        </div>
+        <div class="col-xs-12 float-right">
+          <button class="btn btn-success" type="submit">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="results && results.resultsFound > 0" class="">
+    <ng-template ngFor let-giftCoffeeSubscription [ngForOf]="results.results">
+      <app-gift-coffee-subscription [giftCoffeeSubscription]="giftCoffeeSubscription" ></app-gift-coffee-subscription>
+    </ng-template>
+  </div>
+  <div *ngIf="results && results.resultsFound === 0" class="background-color ">
+    <h3 class="padding">No Subscriptions Found</h3>
+  </div>

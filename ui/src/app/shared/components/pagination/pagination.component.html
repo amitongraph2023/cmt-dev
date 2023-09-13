@@ -1,0 +1,12 @@
+<ul class="pagination pagination-sm justify-content-center mb-0" *ngIf="page && page.totalPages > 0">
+  <li class="page-item" [class.disabled]="page.isFirst">
+    <button class="page-link" (click)="goToPage(page.number - 1)"><span aria-hidden="true">&laquo;</span></button>
+  </li>
+  <ng-template ngFor let-pageItem [ngForOf]="page.numbers">
+    <li class="page-item" [class.active]="pageItem === page.number" *ngIf="pageItem > -1"><button class="page-link" (click)="goToPage(pageItem)">{{pageItem}}</button></li>
+    <li class="page-item disabled" *ngIf="pageItem === -1"><span class="page-link">...</span></li>
+  </ng-template>
+  <li class="page-item" [class.disabled]="page.isLast">
+    <button class="page-link" (click)="goToPage(page.number + 1)"><span aria-hidden="true">&raquo;</span></button>
+  </li>
+</ul>

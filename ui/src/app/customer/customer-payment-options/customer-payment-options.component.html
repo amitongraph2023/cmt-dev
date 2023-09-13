@@ -1,0 +1,234 @@
+<div *ngIf="(customerPaymentOptions)"  class="background-color">
+  <h1 class="pl-2">Payment Options</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+
+      <div class="d-inline-block col-lg-6">
+        <div *ngIf="canViewCC">
+          <h4>Credit Cards</h4>
+          <ng-template ngFor let-creditCard [ngForOf]="customerPaymentOptions.creditCards">
+            <app-credit-card-card [creditCard]="creditCard" [customerDetails]="customerDetails" (updatedCreditCard)="loadCustomerPaymentOptions()"></app-credit-card-card>
+          </ng-template>
+          <div  *ngIf="!(customerPaymentOptions.creditCards)" class="card text-primary bg-white mb-3">
+            <div class="card-body">
+              <p>There are no credit cards associated with this account</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="d-inline-block col-lg-4">
+        <div *ngIf="canViewGC">
+          <div class="clearfix">
+            <h4>Gift Cards
+              <span *ngIf="canAddGC">
+            <button class="btn btn-success float-right" type="button" (click)="clickAddNewGiftCard()">Add</button>
+          </span>
+            </h4>
+          </div>
+          <ng-template ngFor let-giftCard [ngForOf]="customerPaymentOptions.giftCards">
+            <app-gift-card-card [giftCard]="giftCard" [customerDetails]="customerDetails" (updatedGiftCard)="loadCustomerPaymentOptions()"></app-gift-card-card>
+          </ng-template>
+          <div *ngIf="!(customerPaymentOptions.giftCards)" class="card text-primary bg-white mb-3">
+            <div class="card-body">
+              <p>There are no gift cards associated with this account</p>
+            </div>
+          </div>
+        </div>
+
+		<div *ngIf="canViewBC">
+			<div class="clearfix">
+				<h4>
+					Bonus Cards <span *ngIf="canAddBC">
+						<button class="btn btn-success float-right" type="button"
+							(click)="clickAddNewBonusCard()">Add</button>
+					</span>
+				</h4>
+			</div>
+			<ng-template ngFor let-bonusCard
+				[ngForOf]="customerPaymentOptions.bonusCards"> <app-bonus-card-card
+				[bonusCard]="bonusCard" [customerDetails]="customerDetails"
+				(updatedBonusCard)="loadCustomerPaymentOptions()"></app-bonus-card-card>
+			</ng-template>
+			<div *ngIf="!(customerPaymentOptions.bonusCards)"
+				class="card text-primary bg-white mb-3">
+				<div class="card-body">
+					<p>There are no bonus cards associated with this account</p>
+				</div>
+			</div>
+		</div>
+
+        <div *ngIf="canViewAP">
+          <h4>Apple Pay Accounts</h4>
+          <ng-template ngFor let-applePay [ngForOf]="customerPaymentOptions.applePays">
+            <app-applepay-card [applePay]="applePay" [customerDetails]="customerDetails" (updatedApplePay)="loadCustomerPaymentOptions()"></app-applepay-card>
+          </ng-template>
+          <div *ngIf="!(customerPaymentOptions.applePays)" class="card text-primary bg-white mb-3">
+            <div class="card-body">
+              <p>There are no Apple Pay accounts associated with this account</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="canViewPP">
+          <h4>PayPal Accounts</h4>
+          <ng-template ngFor let-payPal [ngForOf]="customerPaymentOptions.payPals">
+            <app-paypal-card [payPal]="payPal" [customerDetails]="customerDetails" (updatedPayPal)="loadCustomerPaymentOptions()"></app-paypal-card>
+          </ng-template>
+          <div *ngIf="!(customerPaymentOptions.payPals)" class="card text-primary bg-white mb-3">
+            <div class="card-body">
+              <p>There are no PayPal accounts associated with this account</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="canViewCampusCard">
+          <h4>Campus Cards</h4>
+          <ng-template ngFor let-campusCard [ngForOf]="customerPaymentOptions.campusCards">
+            <app-campus-card [campusCard]="campusCard" [customerDetails]="customerDetails" (updatedCampusCard)="loadCustomerPaymentOptions()"></app-campus-card>
+          </ng-template>
+          <div *ngIf="!(customerPaymentOptions.campusCards)" class="card text-primary bg-white mb-3">
+            <div class="card-body">
+              <p>There are no campus cards associated with this account</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div *ngIf="canViewCatering" class="row">
+      <div class="d-inline-block col-lg-10">
+        <h4>Corporate Catering</h4>
+        <ng-template ngFor let-corporateCateringAccount [ngForOf]="customerPaymentOptions.corporateCateringAccounts">
+          <app-corp-catering-card [customerDetails]="customerDetails" [corporateCateringAccount]="corporateCateringAccount"></app-corp-catering-card>
+        </ng-template>
+        <div *ngIf="!(customerPaymentOptions.corporateCateringAccounts)" class="card text-primary bg-white mb-3">
+          <div class="card-body">
+            <p>There are no corporate catering accounts associated with this account</p>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!---->
+<!-- Add Gift Card modal -->
+<!---->
+<div *ngIf="newGiftCard" class="modal fade h100" id="editGiftCardModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md h-40" role="document">
+    <div class="modal-content h-100">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="addgcAggregationModalLabel"><span class="fa fa-tag"></span>Add Gift Card</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="loadCustomerPaymentOptions()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark h-100" id="gcmodal-body-75">
+        <div class="h-100" id="gcSelectCustomerHolder">
+          <form  #editGiftCardForm="ngForm">
+            <div class="form-group">
+              <label for="gcCardNickname">Card Nickname</label>
+              <input #gcCardNickname="ngModel" type="text" class="form-control" id="gcCardNickname"
+                     required
+                     [(ngModel)]="newGiftCard.cardNickname" name="gcCardNickname">
+              <div *ngIf="(gcCardNickname.dirty) && !gcCardNickname.valid && gcCardNickname?.errors.required" [ngClass] = "'error'">
+                Gift card nickname is required
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gcCardNumber">Card Number</label>
+              <input #gcCardNumber="ngModel" type="text" class="form-control" id="gcCardNumber"
+                     required
+                     [(ngModel)]="newGiftCard.cardNumber" name="gcCardNumber">
+              <div *ngIf="(gcCardNumber.dirty) && !gcCardNumber.valid && gcCardNumber?.errors.required" [ngClass] = "'error'">
+                Gift card number is required
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <button  class="btn btn-success" (click)="addGiftCard()" type="submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!-- Add Bonus Card modal -->
+<!---->
+<div *ngIf="newBonusCard" class="modal fade h100" id="editBonusCardModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md h-40" role="document">
+    <div class="modal-content h-100">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="addbcAggregationModalLabel"><span class="fa fa-tag"></span>Add Bonus Card</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="loadCustomerPaymentOptions()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark h-100" id="bcmodal-body-75">
+        <div class="h-100" id="bcSelectCustomerHolder">
+          <form  #editBonusCardForm="ngForm">
+            <div class="form-group">
+              <label for="bcCardNickname">Card Nickname</label>
+              <input #bcCardNickname="ngModel" type="text" class="form-control" id="bcCardNickname"
+                     required
+                     [(ngModel)]="newBonusCard.cardNickname" name="bcCardNickname">
+              <div *ngIf="(bcCardNickname.dirty) && !bcCardNickname.valid && bcCardNickname?.errors.required" [ngClass] = "'error'">
+                Bonus card nickname is required
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="bcCardNumber">Card Number</label>
+              <input #bcCardNumber="ngModel" type="text" class="form-control" id="bcCardNumber"
+                     required
+                     [(ngModel)]="newBonusCard.cardNumber" name="bcCardNumber">
+              <div *ngIf="(bcCardNumber.dirty) && !bcCardNumber.valid && bcCardNumber?.errors.required" [ngClass] = "'error'">
+                Bonus card number is required
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="bcEffectiveStartDate">Effective Start Date</label>
+              <input #bcEffectiveStartDate="ngModel" type="text" class="form-control" id="bcEffectiveStartDate"
+                     required
+                     [(ngModel)]="newBonusCard.effectiveStartDate" name="bcEffectiveStartDate">
+              <div *ngIf="(bcEffectiveStartDate.dirty) && !bcEffectiveStartDate.valid && bcEffectiveStartDate?.errors.required" [ngClass] = "'error'">
+                Bonus card effective start date is required
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="bcEffectiveEndDate">Effective End Date</label>
+              <input #bcEffectiveEndDate="ngModel" type="text" class="form-control" id="bcEffectiveEndDate"
+                     required
+                     [(ngModel)]="newBonusCard.effectiveEndDate" name="bcEffectiveEndDate">
+              <div *ngIf="(bcEffectiveEndDate.dirty) && !bcEffectiveEndDate.valid && bcEffectiveEndDate?.errors.required" [ngClass] = "'error'">
+                Bonus card effective end date is required
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <button  class="btn btn-success" (click)="addBonusCard()" type="submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

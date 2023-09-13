@@ -1,0 +1,9 @@
+<div *ngIf="results && results.resultsFound > 0" class="background-color padding">
+  <ng-template ngFor let-giftCoffeeSubscription [ngForOf]="results.results">
+    <app-gift-coffee-subscription [giftCoffeeSubscription]="giftCoffeeSubscription" ></app-gift-coffee-subscription>
+  </ng-template>
+</div>
+
+<div *ngIf="results && results.resultsFound === 0" class="background-color ">
+  <h3 class="padding">No Subscriptions Found</h3>
+</div>

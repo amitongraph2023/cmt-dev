@@ -1,0 +1,583 @@
+@import 'variables';
+@import '../node_modules/font-awesome/scss/font-awesome';
+@import '../node_modules/bootstrap/scss/bootstrap';
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~open-iconic/font/css/open-iconic-bootstrap.css';
+
+@keyframes blink {
+  /**
+   * At the start of the animation the dot
+   * has an opacity of .2
+   */
+  0% {
+    opacity: .2;
+  }
+  /**
+   * At 20% the dot is fully visible and
+   * then fades out slowly
+   */
+  20% {
+    opacity: 1;
+  }
+  /**
+   * Until it reaches an opacity of .2 and
+   * the animation can start again
+   */
+  100% {
+    opacity: .2;
+  }
+}
+@keyframes pulse {
+  0% { text-shadow: 0 0 1px #2187e7; }
+  20% { text-shadow: 0 0 15px #2187e7; }
+  100% { text-shadow: 0 0 1px #2187e7; }
+}
+@-moz-keyframes spinPulse {
+  0% { -moz-transform: rotate(160deg); opacity: 0; box-shadow: 0 0 1px #2187e7;}
+  50% { -moz-transform: rotate(145deg); opacity: 1; }
+  100% { -moz-transform: rotate(-320deg); opacity: 0; }
+}
+@-moz-keyframes spinoffPulse {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg);  }
+}
+@-webkit-keyframes spinPulse {
+  0% { -webkit-transform: rotate(160deg); opacity: 0; box-shadow: 0 0 1px #2187e7; }
+  50% { -webkit-transform: rotate(145deg); opacity: 1;}
+  100% { -webkit-transform: rotate(-320deg); opacity: 0; }
+}
+@-webkit-keyframes spinoffPulse {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+$sidebar-width: 260px;
+$sidebar-collapsed-width: 50px;
+
+@mixin transformScale($scale-percent) {
+  -webkit-transform: scale($scale-percent); /* Safari and Chrome */
+  -moz-transform: scale($scale-percent); /* Firefox */
+  -ms-transform: scale($scale-percent); /* IE 9 */
+  -o-transform: scale($scale-percent); /* Opera */
+  transform: scale($scale-percent);
+}
+@mixin transition($type, $duration, $timing-function) {
+  -webkit-transition: $type $duration; /* Safari and Chrome */
+  -webkit-transition-timing-function: $timing-function; /* Safari and Chrome */
+  -moz-transition: $type $duration; /* Firefox */
+  -moz-transition-timing-function: $timing-function; /* Firefox */
+  -o-transition: $type $duration; /* Opera */
+  -o-transition-timing-function: $timing-function; /* Opera */
+  transition: $type $duration;
+  transition-timing-function: $timing-function;
+}
+
+body {
+  overflow: hidden;
+
+  * .card-header, * .modal-title {
+    font-variant: small-caps;
+    padding-bottom: 0;
+  }
+
+  * .page-item.active .page-link {
+    cursor: default !important;
+  }
+
+  .wrapper {
+    display: flex;
+
+    #content {
+      height: 100vh;
+      margin-left: $sidebar-width + $border-width;
+      overflow: auto;
+      padding: 10px;
+      width: calc(100% - #{$sidebar-width} - #{$border-width});
+      //transition: margin-left .25s ease-in-out;
+      //-webkit-transition: margin-left .25s ease-in-out; /* Safari */
+
+      &.login {
+        margin-left: 0 !important;
+        width: initial;
+      }
+
+      &.collapsed {
+        margin-left: $sidebar-collapsed-width + $border-width !important;
+      }
+
+      #dashboard {
+        .card {
+          border: darken(#adb5bd, 7.5%) solid $border-width;
+          float: left;
+          margin: 10px;
+        }
+      }
+    }
+
+    #sidebar-wrapper {
+      color: white;
+      display: flex;
+      position: fixed;
+      z-index: 100;
+
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+
+      #sidebar {
+        background-color: #375a7f;
+        border-right: $border-width solid darken(#adb5bd, 7.5%);
+        font-variant: small-caps;
+        height: 100vh;
+        margin-left: -$sidebar-width;
+        min-width: $sidebar-width;
+        max-width: $sidebar-width;
+        overflow: hidden;
+        transition: margin-left .25s ease-in-out;
+        -webkit-transition: margin-left .25s ease-in-out; /* Safari */
+
+        &.active {
+          margin-left: 0;
+        }
+
+        .sidebar-content {
+          padding-top: 5px;
+
+          * li > div {
+            cursor: pointer;
+            padding: 10px 20px;
+
+            &:hover{
+              background-color: lighten(#375a7f, 10%);
+
+              .fa {
+                transition: transform .25s;
+                transition-timing-function: ease-in-out;
+                -webkit-transition: transform .25s; /* Safari */
+                -webkit-transition-timing-function: ease-in-out; /* Safari */
+              }
+            }
+
+            &.active {
+              background-color: darken($success, 10%);
+              cursor: default;
+              pointer-events: none;
+            }
+
+            a:hover {
+              text-decoration: none;
+            }
+          }
+
+          * li > div:hover:not(.active) .fa {
+            -webkit-transform:scale(1.5); /* Safari and Chrome */
+            -moz-transform:scale(1.5); /* Firefox */
+            -ms-transform:scale(1.5); /* IE 9 */
+            -o-transform:scale(1.5); /* Opera */
+            transform: scale(1.5);
+          }
+
+          .sidebar-menu {
+            list-style: none;
+            padding: 0;
+
+            .sidebar-sub-menu {
+              background-color: darken(#375a7f, 5%);
+              border-bottom: 0 solid darken(#adb5bd, 7.5%);
+              border-top: 0 solid #444;
+              list-style: none;
+              max-height: 0;
+              overflow: hidden;
+              padding: 0;
+              transition: border-bottom-width .5s, border-top-width .5s, max-height .5s;
+              transition-timing-function: ease-in-out;
+              -webkit-transition: border-bottom-width .5s, border-top-width .5s, max-height .5s; /* Safari */
+              -webkit-transition-timing-function: ease-in-out; /* Safari */
+
+              &.shown {
+                border-width: $border-width 0;
+                max-height: 1000px;
+              }
+
+              li > div {
+                padding-left: 35px;
+              }
+            }
+          }
+        }
+
+        .sidebar-handle {
+          cursor: pointer;
+          margin-bottom: 25px;
+          padding: 10px;
+
+          .fa-stack {
+            float: right;
+          }
+        }
+
+        .sidebar-header {
+          border-bottom: $border-width solid darken(#adb5bd, 7.5%);
+          padding: 10px;
+
+          & > span {
+            font-size: 1.5em;
+          }
+
+          img {
+            float: left;
+            margin-right: 10px;
+            margin-top: 11px;
+            width: 85px;
+          }
+        }
+
+        .sidebar-user {
+          padding: 10px 0;
+
+          button {
+            margin-top: -31px;
+          }
+
+          h4 {
+            margin: 0;
+          }
+        }
+      }
+
+      .spoof-links {
+        padding: 10px 20px;
+
+        width: 250px;
+      }
+
+      .version-holder {
+        bottom: 5px;
+        font-size: 0.5em;
+        padding-right: 10px;
+        position: absolute;
+        width: 250px;
+
+        #version {
+          float: right;
+        }
+      }
+    }
+
+    #sidebar-collapsed {
+      background-color: #375a7f;
+      border-right: $border-width solid darken(#adb5bd, 7.5%);
+      color: white;
+      height: 100vh;
+      min-width: 0;
+      max-width: 0;
+      overflow: hidden;
+      padding: 10px 0;
+      transition: min-width .25s, max-width .25s, padding .25s, width .25s;
+      transition-timing-function: ease-in-out;
+      -webkit-transition: min-width .25s, max-width .25s, padding .25s, width .25s; /* Safari */
+      -webkit-transition-timing-function: ease-in-out; /* Safari */
+
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+
+      &.active {
+        min-width: $sidebar-collapsed-width;
+        max-width: $sidebar-collapsed-width;
+        padding: 10px;
+
+        & * #version_sm {
+          display: block !important;
+        }
+      }
+
+      .fa-stack {
+        cursor: pointer;
+      }
+
+      .version-holder {
+        #version_sm {
+          display: none;
+          padding-left: 2px;
+        }
+      }
+    }
+
+    * .wizard-step-container {
+      height: 100%;
+      overflow: auto;
+      padding: 15px;
+      width: 100%;
+
+      .wizard-step {
+
+        &.middle {
+          display: inline-block;
+          position: relative;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+        &.top {
+          display: inline-block;
+          position: relative;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .wizard-center-form {
+          display: initial !important;
+          left: 50% !important;
+          position: relative !important;
+          transform: translateX(-50%) !important;
+          width: 150px !important;
+        }
+
+        .wizard-buttons-holder {
+          text-align: center;
+
+          button {
+            white-space: normal !important;
+
+            &:not(:last-child) {
+              margin-right: 5px;
+            }
+
+            span {
+              line-height: normal;
+            }
+            .buttons-hr {
+              height: 10px;
+            }
+
+            &.btn-md-sq {
+              height: 100px;
+              width: 100px;
+            }
+            &.btn-lg-sq {
+              height: 150px;
+              width: 150px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+th {
+  cursor: default;
+}
+
+#modal-body-75 {
+  height: 75%;
+  overflow: auto;
+}
+
+.bb-1 {
+  border-bottom: $border-color solid 1px;
+}
+.bg-danger-faded {
+  background-color: lighten($danger, 30%);
+}
+.bg-success-faded {
+  background-color: lighten($success, 30%);
+}
+.btn-clear-search-sm {
+  margin: -22px 20px 0 0;
+  position: relative;
+}
+.btn-grow {
+  &:hover .fa {
+    @include transformScale(1.5);
+  }
+
+  .fa {
+    @include transition(transform, .25s, ease-in-out);
+  }
+}
+.btn-xs {
+  @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-xs, $btn-line-height-xs, $btn-border-radius-sm);
+}
+.circle-inner {
+  background-color: rgba(0, 0, 0, 0);
+  border: 5px solid rgba(0, 183, 229, 0.9);
+  border-left: 5px solid rgba(0, 0, 0, 0);
+  border-radius: 50px;
+  border-right: 5px solid rgba(0, 0, 0, 0);
+  box-shadow: 0 0 15px #2187e7;
+  height: 30px;
+  left: calc(50% + 10px);
+  opacity: .9;
+  position: absolute;
+  top: calc(40% + 10px);
+  transform: scale(0) translate(-50%, -50%);
+  width: 30px;
+  -moz-animation: spinoffPulse 1s infinite linear;
+  -webkit-animation: spinoffPulse 1s infinite linear;
+}
+.circle-outer {
+  background-color: rgba(0, 0, 0, 0);
+  border: 5px solid rgba(0, 183, 229, 0.9);
+  border-left: 5px solid rgba(0, 0, 0, 0);
+  border-radius: 50px;
+  border-right: 5px solid rgba(0, 0, 0, 0);
+  box-shadow: 0 0 35px #2187e7;
+  height: 50px;
+  left: 50%;
+  opacity: .9;
+  position: relative;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  -moz-animation: spinPulse 1s infinite ease-in-out;
+  -webkit-animation: spinPulse 1s infinite linear;
+}
+.col-dots {
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+
+  &:after {
+    content: " ..................................................................................";
+    opacity: .25;
+  }
+}
+.form-error-count {
+  cursor: default;
+  margin: -35px 1.25rem 0 -90px !important;
+  z-index: 2000;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+.grow {
+  @include transition(transform, .25s, ease-in-out);
+
+  &:hover {
+    @include transformScale(1.5);
+  }
+}
+.h-55 {
+  height: 55% !important;
+}
+.h-80 {
+  height: 80% !important;
+}
+.hidden {
+  display: none;
+}
+.list-holder {
+  height: 100%;
+  overflow-y: scroll;
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+}
+.loading-text {
+  animation: pulse 1.4s infinite linear;
+  color: rgba(0, 183, 229, 0.9);
+  left: 53%;
+  position: absolute;
+  text-shadow: 0 0 1px #2187e7;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  span {
+    /**
+     * Use the blink animation, which is defined above
+     */
+    animation-name: blink;
+    /**
+     * The animation should take 1.4 seconds
+     */
+    animation-duration: 1.4s;
+    /**
+     * It will repeat itself forever
+     */
+    animation-iteration-count: infinite;
+    /**
+     * This makes sure that the starting style (opacity: .2)
+     * of the animation is applied before the animation starts.
+     * Otherwise we would see a short flash or would have
+     * to set the default styling of the dots to the same
+     * as the animation. Same applies for the ending styles.
+     */
+    animation-fill-mode: both;
+
+    &:nth-child(2) {
+      /**
+       * Starts the animation of the third dot
+       * with a delay of .2s, otherwise all dots
+       * would animate at the same time
+       */
+      animation-delay: .2s;
+    }
+    &:nth-child(3) {
+      /**
+       * Starts the animation of the third dot
+       * with a delay of .4s, otherwise all dots
+       * would animate at the same time
+       */
+      animation-delay: .4s;
+    }
+  }
+}
+.mh-25 {
+  max-height: 25% !important;
+}
+.nobr {
+  white-space: nowrap;
+}
+.no-overflow {
+  overflow: hidden;
+}
+.no-resize {
+  resize: none;
+}
+.sentence-case {
+  text-transform: lowercase;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+.sidebar-splitter {
+  height: 2px;
+  @include gradient-x-three-colors(rgba(128,128,128,0), rgba(128,128,128,1), 50%, rgba(128,128,128,0));
+  //@include background-image(linear-gradient(left, rgba(68,68,68,0) 1%,rgba(68,68,68,1) 50%,rgba(68,68,68,0.04) 99%));
+}
+.th-sort-col {
+  cursor: pointer;
+}
+.underline {
+  text-decoration: underline;
+}
+.w-24 {
+  width: 24% !important;
+}
+.w-32 {
+  width: 32% !important;
+}
+.w-33 {
+  width: 32.2% !important;
+}
+.w-48 {
+  width: 48.55% !important;
+}
+.w-49 {
+  width: 48.65% !important;
+}
+.w-98 {
+  width: 98% !important;
+}

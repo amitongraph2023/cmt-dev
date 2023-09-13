@@ -1,0 +1,81 @@
+<div class="card text-primary bg-white mb-3">
+  <form #f="ngForm">
+    <div class="card-header pt-1 pb-1">
+      <div class="card-title" >
+        <span class="pull-left">{{email.emailAddress}}</span>
+        <span class="pull-right badge badge-primary" *ngIf="email.isDefault">Default Email</span>
+        <span class="pull-right" *ngIf="!(email.isDefault)"><button class="btn btn-success btn-sm pull-right" type="button" (click)="makeDefaultCustomerEmail()">Make Default</button></span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="emailAddress">Email Address</label>
+        <input #emailAddress="ngModel" type="text" class="form-control" id="emailAddress"
+               required minlength="1" maxlength="100"
+               [readonly]="!(edit)"
+               [(ngModel)]="email.emailAddress" name="emailAddress">
+        <div *ngIf="emailAddress.invalid && (emailAddress.dirty || emailAddress.touched)" [ngClass] = "'error'">
+          <div *ngIf="emailAddress.errors?.required">
+            Email address is required
+          </div>
+          <div *ngIf="emailAddress.errors?.maxlength">
+            Email address must be less than 100 characters
+          </div>
+          <div *ngIf="emailAddress.errors?.minlength">
+            Email address must be at least 1 character long
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="(edit)" class="form-group">
+        <label for="editEmailType">Email Type</label>
+        <select  #emailType="ngModel" name="emailType" required id="editEmailType" class="form-control select"
+                 [(ngModel)]="email.emailType">
+          <option *ngFor="let type of emailTypes.key()" [ngValue]="type">{{type}}</option>
+        </select>
+        <div *ngIf="(emailType.dirty) && !emailType.valid && emailType?.errors.required" [ngClass] = "'error'">
+          Email type is required
+        </div>
+      </div>
+      <div *ngIf="!(edit)" class="form-group">
+        <label for="emailType">Email Type</label>
+        <select name="emailType" required id="emailType" class="form-control select"
+                [(ngModel)]="email.emailType">
+          <option [ngValue]="email.emailType">{{email.emailType}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="padding" *ngIf="!(edit) && canUpdate">
+        <button class="btn btn-success pull-right " (click)="clickEditEmail()" type="button">Edit</button>
+      </div>
+      <div class="padding" *ngIf="(edit) && canUpdate">
+        <button class="btn btn-secondary pull-right"  (click)="cancelUpdateCustomerEmail()" type="button">Cancel</button>
+        <button class="btn btn-success pull-right" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="updateCustomerEmail()" type="submit">Update</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal{{email.id}}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

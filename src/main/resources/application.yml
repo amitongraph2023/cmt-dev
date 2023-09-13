@@ -1,0 +1,77 @@
+chub:
+  base-url: https://api-qa.panerabread.com/custhub
+eps:
+  auth: Y210OmVmaXdmMzQ5MGYzcmMtNDN0MzRmNjU3JCNkZmd2ZmY=
+  base-url: https://eps-dev.paneracloud.com
+apigee:
+  paytronix:
+    base-url: https://api-qa.panerabread.com/loyalty/v1
+    read-timeout: 5000
+    connection-timeout: 5000
+iso3:
+  auth:  UHdXcUdfT0JoSVZkMHpqdjFFdlBQUjlQalVvYTpacWQ2X0dZM190U2xBTHRFalNOUjloUEx1ZFlh
+  base-url: https://iso3-preprod.paneracloud.com/oauth2
+
+lmt:
+  auth: d2VidTpwYXNz
+  base-url: https://lto-test.paneracloud.com/lto/api/external
+png:
+  auth: Y210OlkyMTBPJmxCT1IwUmxkXmxCaGMzTjNiM0pr
+  base-url: https://notification-qa.paneracloud.com
+subscription-service:
+  base-url: https://api-qa.panerabread.com/ecom/subscription/v1/
+  env: test1
+sso:
+  auth: Y210OnBhc3M=
+  base-url: http://sso-test.paneracloud.com
+  cookie-domain: panerabread.com
+
+logging:
+  file: cmt.log
+  level:
+    com:
+      panera: INFO
+    org:
+      hibernate:
+#        SQL: DEBUG
+#        type: TRACE
+      springframework:
+        test:
+          context:
+            support:
+              AbstractTestContextBootstrapper: INFO
+  pattern:
+    console: '%d{"yyyy-MM-dd HH:mm:ss,SSS"} CMT [ requestId=%X{requestId} ], [ username=%X{username} ] [%thread] %-5level %logger{36} - %msg%n'
+    file: '%d{"yyyy-MM-dd HH:mm:ss,SSS"} CMT [ requestId=%X{requestId} ], [ username=%X{username} ] [%thread] %-5level %logger{36} - %msg%n'
+management:
+  endpoint:
+    health:
+      show-details: when_authorized
+---
+spring:
+  profiles: development
+
+  data:
+    mongodb:
+      uri: mongodb://sso_admin:bread4all@d1xmngodbs10.paneracloud.com:30120,d1xmngodbs11.paneracloud.com:30120,d1xmngodbs12.paneracloud.com:30120/sso
+  datasource:
+    url: jdbc:oracle:thin:@d1xorcldbs08.paneracloud.com:20150/CUST_CMT_DEVL
+    username: CUST_CMT_OWNER
+    password: bread4alldev
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    database-platform: org.hibernate.dialect.Oracle10gDialect
+    hibernate:
+      ddl-auto: none
+      use-new-id-generator-mappings: true
+    properties:
+      hibernate:
+        default_schema: CUST_CMT_OWNER
+  mail:
+    host: mail.panerabread.com
+    port: 25
+    protocol: smtp
+    test-connection: true
+  resources:
+    cache:
+      period: "86400"

@@ -1,0 +1,93 @@
+<div id="sidebar-wrapper">
+  <nav id="sidebar" [class.active]="showMenu">
+    <div class="sidebar-header">
+      <span [routerLink]="['/home']">
+        <img src="assets/images/panera_logo.png">
+        Customer Management Tool
+      </span>
+      <div class="sidebar-user pb-0">
+        <h5 class="text-muted" style="max-width: 85%;"><span *ngIf="user">Welcome {{ user | sentencecase}}</span></h5>
+        <button *ngIf="showMenu" class="btn btn-danger btn-sm btn-grow pull-right" (click)="doLogout()" title="Logout"><span class="fa fa-sign-out" aria-hidden="true"></span></button>
+      </div>
+    </div>
+    <div class="sidebar-content">
+      <ul class="sidebar-menu">
+        <ng-template ngFor let-navLink let-i="index" [ngForOf]="shownNavLinks">
+          <li class="sidebar-splitter" *ngIf="navLink.display === '---'"></li>
+          <li *ngIf="(navLink.display !== '---' && navLink.isEnabled) && (navLink.display === 'Home' || navLink.display === 'Admin' || navLink.display === 'Gift Coffee' || (isCustomerSelected && isSelectedCustomerActive))">
+            <div [class.active]="navLink.isActive" (click)="navLinkClick(i)">
+              <span class="fa fa-{{navLink.icon}}" *ngIf="navLink.icon"></span>
+              <span>{{navLink.display}}</span>
+              <span class="fa pull-right" [class.fa-angle-down]="navLink.showChildren" [class.fa-angle-right]="!navLink.showChildren" *ngIf="navLink.children"></span>
+            </div>
+            <ul class="sidebar-sub-menu" [class.shown]="navLink.showChildren" *ngIf="navLink.children">
+              <ng-template ngFor let-childNavLink let-j="index" [ngForOf]="navLink.children">
+                <li class="sidebar-splitter" *ngIf="childNavLink.display === '---'"></li>
+                <li *ngIf="childNavLink.display !== '---' && childNavLink.isEnabled">
+                  <div [class.active]="childNavLink.isActive" (click)="navSubLinkClick(i, j)">
+                    <span class="fa fa-{{childNavLink.icon}}" *ngIf="childNavLink.icon"></span>
+                    <span>{{childNavLink.display}}</span>
+                  </div>
+                </li>
+              </ng-template>
+            </ul>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
+    <div *ngIf="isCustomerSelected && isSelectedCustomerActive && canViewSpoofButtons" [class.active]="showMenu">
+      <div *ngFor="let spoofButton of spoofButtons" class="spoof-links">
+        <button *ngIf="(spoofButton.catVisible === 'true' && permissions.salesAdmin) || !(permissions.salesAdmin)" class="btn btn-light" [textContent]="spoofButton.text" (click)="onSpoofButtonClick(spoofButton.name)"></button>
+      </div>
+    </div>
+    <div *ngIf="isCustomerSelected && !isSelectedCustomerActive && !isSelectedCustomerSuspended && !isSelectedCustomerPending && canViewSpoofButtons" class="not-active">
+      Account impersonation is not available because the selected customer is in a protected status.
+    </div>
+    <div *ngIf="isCustomerSelected && !isSelectedCustomerActive && !isSelectedCustomerSuspended && isSelectedCustomerPending && canViewSpoofButtons" class="not-active">
+      Account impersonation is not available because the selected customer is pending verification.
+    </div>
+    <div *ngIf="isCustomerSelected && !isSelectedCustomerActive && isSelectedCustomerSuspended && !isSelectedCustomerPending && canViewSpoofButtons" class="not-active">
+      Account has been suspended for review by Security team
+    </div>
+    <div *ngIf="canViewSpoofButtons" [class.active]="showMenu">
+      <div style="height: 2px;
+    background-image: -webkit-gradient(linear, left top, right top, from(rgba(128, 128, 128, 0)), color-stop(50%, gray), to(rgba(128, 128, 128, 0)));
+    background-image: linear-gradient(to right, rgba(128, 128, 128, 0), gray 50%, rgba(128, 128, 128, 0));
+    background-repeat: no-repeat; margin: .4em;"></div>
+        <div *ngFor="let nonMyPaneraSpoofButton of nonMyPaneraSpoofButtons" class="spoof-links">
+          <button class="btn btn-light" [textContent]="nonMyPaneraSpoofButton.text" (click)="onNonMyPaneraSpoofButtonClick(nonMyPaneraSpoofButton.name)"></button>
+        </div>
+    </div>
+    <div class="version-holder">
+      <div id="version">Build version: {{version}}</div>
+    </div>
+  </nav>
+  <!---->
+  <!--Collapsed Nav-->
+  <!---->
+  <nav id="sidebar-collapsed" [class.active]="!showMenu">
+    <div class="version-holder">
+      <div id="version_sm">{{version}}</div>
+    </div>
+  </nav>
+</div>
+
+<!---->
+<!--Leaving CMT Confirmation modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="leavingCMTConfirmationModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title"><span class="fa fa-exclamation-triangle"></span>You are leaving CMT</h5>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>You are leaving CMT, close new tab to come back here.</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-danger btn-grow" data-dismiss="modal"><span class="fa fa-close"></span> Cancel</button>
+        <button type="button" class="btn btn-primary btn-grow" (click)="onContinueButtonClick()"><span class="fa fa-check-circle"></span> Continue</button>
+      </div>
+    </div>
+  </div>
+</div>

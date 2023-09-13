@@ -1,0 +1,102 @@
+<div *ngIf="pageCheck()" class="background-color">
+  <h1 class="pl-2">MyPanera Loyalty Communications Preferences</h1>
+  <div class="section col-lg-20 col-sm-20">
+    <div class="row">
+      <form (ngSubmit)="updateSubscriptions()" #subscriptionsForm="ngForm">
+        <div class="d-inline-block col-lg-18">
+          <div class="card text-primary bg-white mb-5">
+            <div class="card-header">
+              <div class="card-title" >Email Preferences</div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="card text-white bg-blue mb-3">
+                  <div class="card-header pt-1 pb-1">
+                    <div class="card-title" >Global Email Options</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="radio">
+                      <label>
+                        <input
+                          type="radio"
+                          name="globalEmailOpt"
+                          [value]="true"
+                          (change)="radioChangeGlobalEmailOptionHandler($event)"
+                          [checked]="isEmailGlobalOpt"
+                          [readOnly]="!canUpdateSubscription"
+                          [disabled]="!canUpdateSubscription"
+                        >
+                        On
+                      </label>
+                      <br>
+                      <label>
+                        <input
+                          type="radio"
+                          name="globalEmailOpt"
+                          [value]="false"
+                          (change)="radioChangeGlobalEmailOptionHandler($event)"
+                          [checked]="!isEmailGlobalOpt"
+                          [readOnly]="!canUpdateSubscription"
+                          [disabled]="!canUpdateSubscription"
+                        >
+                        Off
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <!-- Hide this part of the form if global email options are off-->
+                <div class="card text-white bg-blue mb-3">
+                  <!-- Email Subcriptions -->
+                  <div class="card-header pt-1 pb-1">
+                    <div class="card-title" >Email Subscriptions</div>
+                  </div>
+                  <div class="card-body">
+                    <div class="checkbox" *ngFor="let subscription of customerSubscriptions.subscriptions">
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="subscription"
+                          [value]="subscription.subscriptionCode"
+                          (change)="checkboxChangeSubscriptionHandler($event)"
+                          [checked]=" subscription.isSubscribed"
+                          [readOnly]="canUpdateSubscription"
+                          [disabled]="!isEmailGlobalOpt"
+                        >
+                        {{ subscription.displayName }}
+                      </label>
+                      <!-- Email Suppressors -->
+                      <div *ngIf="showSuppressors && subscription.subscriptionCode === 2" class="padding">
+                        <hr align="center" width="75%"/>
+                        <div class="checkbox" *ngFor="let suppressor of customerSubscriptions.suppressors">
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="suppressor"
+                              [value]="suppressor.suppressionCode"
+                              (change)="checkboxChangeSuppressorHandler($event)"
+                              [checked]="!suppressor.isSuppressed"
+                              [readOnly]="canUpdateSubscription"
+                            >
+                            {{suppressor.displayName}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div *ngIf="canUpdateSubscription" class="col-xs-12 padding">
+                <button class="btn btn-success" type="submit">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(pageCheck())">
+  Loading...
+</div>

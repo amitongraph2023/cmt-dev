@@ -1,0 +1,143 @@
+<div class="card text-primary bg-white mb-3">
+  <form #f="ngForm">
+    <div class="card-header pt-1 pb-1">
+      <div class="card-title" >
+        <span class="pull-left">{{creditCard.paymentLabel}}</span>
+        <span class="pull-right badge badge-primary" *ngIf="creditCard.isDefault">Default Credit Card</span>
+        <span class="pull-right" *ngIf="canSetDefault && !(creditCard.isDefault) && validExpiration"><button class="btn btn-success btn-sm pull-right" type="button" (click)="makeDefaultCreditCard()">Make Default</button></span>
+        <span class="pull-right"></span>
+        <span class="pull-right badge badge-secondary" *ngIf="creditCard.isDefaultSubscription">Default Subscription Credit Card</span>
+        <span class="pull-right" *ngIf="canSetDefault && !(creditCard.isDefaultSubscription) && validExpiration"><button class="btn btn-success btn-sm pull-right" type="button" (click)="makeDefaultSubscriptionCreditCard()">Make Default Subscription</button></span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="ccPaymentLabel">Credit Card Nickname</label>
+        <input #ccPaymentLabel="ngModel" type="text" class="form-control" id="ccPaymentLabel"
+               required
+               (blur)="expirationValidator(creditCard.expirationDate)"
+               [readonly]="!(edit) && canUpdate"
+               [(ngModel)]="creditCard.paymentLabel" name="ccPaymentLabel">
+        <div *ngIf="(ccPaymentLabel.dirty) && !ccPaymentLabel.valid && ccPaymentLabel?.errors.required" [ngClass] = "'error'">
+          Payment label is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ccCardholderName">Cardholder Name</label>
+        <input #ccPaymentLabel="ngModel" type="text" class="form-control" id="ccCardholderName"
+               required
+               [readonly]="!(edit) && canUpdate"
+               [(ngModel)]="creditCard.cardholderName" name="ccCardholderName">
+        <div *ngIf="(ccPaymentLabel.dirty) && !ccPaymentLabel.valid && ccPaymentLabel?.errors.required" [ngClass] = "'error'">
+          Cardholder name is required
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="ccCreditCardType">Credit Card Type</label>
+          <input #ccCreditCardType="ngModel" type="text" class="form-control" id="ccCreditCardType"
+                 required
+                 [readonly]="true"
+                 [(ngModel)]="creditCard.creditCardType"
+                 name="ccCreditCardType">
+          <div *ngIf="(ccCreditCardType.dirty) && !ccCreditCardType.valid && ccCreditCardType?.errors.required" [ngClass] = "'error'">
+            Credit card type is required
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ccLastFour">Last Four</label>
+          <input #ccLastFour="ngModel" type="text" class="form-control" id="ccLastFour"
+                 required
+                 [readonly]="true"
+                 [(ngModel)]="creditCard.lastFour" name="ccLastFour">
+          <div *ngIf="(ccLastFour.dirty) && !ccLastFour.valid && ccLastFour?.errors.required" [ngClass] = "'error'">
+            Last four are required
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ccExpirationDate">Expiration Date</label>
+          <input #ccExpirationDate="ngModel" type="text" class="form-control" id="ccExpirationDate"
+                 required
+                 minlength="4" maxlength="4"
+                 (focusout)="expirationValidator(ccExpirationDate.value)"
+                 [readonly]="!(edit) && canUpdate"
+                 [(ngModel)]="creditCard.expirationDate" name="ccExpirationDate"
+          >
+          <div *ngIf="(ccExpirationDate.dirty) && !ccExpirationDate.valid && ccExpirationDate?.errors.required" [ngClass] = "'error'">-->
+            Expiration date is required
+          </div>
+          <div *ngIf="!validExpiration" [ngClass] = "'error'">Expiration Date Occurs in Past</div>
+        </div>
+        <div class="form-group">
+          <label for="ccZip">Postal Code</label>
+          <input #ccZip="ngModel" type="text" class="form-control" id="ccZip"
+                 required
+                 [readonly]="true"
+                 [(ngModel)]="creditCard.creditCardZip" name="ccZip">
+        </div>
+      </div>
+    </div>
+    <div *ngIf="canUpdate || canDelete" class="card-footer">
+      <div class="padding" *ngIf="(canUpdate || canDelete) && !(edit)">
+        &nbsp;
+        <button class="btn btn-success pull-right " (click)="clickEditCreditCard()" type="button">Edit</button>
+        <button *ngIf="canDelete && !creditCard.isDefault" class="btn btn-danger pull-right" (click)="confirmDelete()" type="button">Delete</button>
+
+      </div>
+      <div class="padding" *ngIf="(canUpdate || canDelete) && (edit)">
+        <button class="btn btn-secondary pull-right"  (click)="cancelUpdateCreditCard()" type="button">Cancel</button>
+        <button *ngIf="canDelete && !creditCard.isDefault && !creditCard.isDefaultSubscription" class="btn btn-danger pull-right" (click)="confirmDelete()" type="button">Delete</button>
+        <button *ngIf="canDelete && creditCard.isDefault && creditCard.isDefaultSubscription" class="btn btn-danger pull-right" disabled type="button"
+                title="Cannot delete default credit card">Delete</button>
+        <button *ngIf="canUpdate" class="btn btn-success pull-right" [class.btn-grow]="f.valid"  [disabled]="!f.valid || !validExpiration" (click)="updateCreditCard()" type="submit">Update</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!---->
+<!-- Delete credit card confirmation modal -->
+<!---->
+<div class="modal fade h100" id="deleteConfirmModal{{creditCard.token}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p><strong>Please confirm that you want to delete this credit card.</strong></p>
+        <div class="pull-right">
+          <button class="btn btn-danger" (click)="deleteCreditCard()" type="button">Delete</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal{{creditCard.token}}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

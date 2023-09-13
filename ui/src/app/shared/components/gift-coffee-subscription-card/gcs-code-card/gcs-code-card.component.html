@@ -1,0 +1,13 @@
+<div class="padding">
+<div class="card text-primary bg-white mb-3">
+  <div class="card-body">
+    <p>Gift Code: {{giftCode.code}}</p>
+    <p>Redemption Status: {{giftCode.status}}</p>
+    <p>Description: {{giftCode.description}}</p>
+    <p>Program: {{giftCode.program}}</p>
+    <p *ngIf="giftCode.redemptionCustomerId">Redeemed by CustomerId: {{giftCode.redemptionCustomerId}}</p>
+    <p *ngIf="giftCode.redeemedDateTime">Redeemed Date: {{giftCode.redeemedDateTime}}</p>
+    <button *ngIf="resend" class="btn btn-primary" (click)="clickResendEmail()" type="button">Resend Email</button>
+  </div>
+</div>
+</div>

@@ -1,0 +1,469 @@
+<div *ngIf="(customerDetails)" class="background-color">
+  <h1 class="pl-2">Customer Info</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-6">
+        <div *ngIf="details" class="card text-primary bg-white mb-3">
+          <form (ngSubmit)="updateCustomerInfo()" #userDetails="ngForm">
+            <h5 class="card-header pt-1 pb-1">Details</h5>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="loyalty">Loyalty</label>
+                <input type="text" class="form-control" id="loyalty"
+                       [readonly]="customerDetails.loyaltyCardNumber === null"
+                       [(ngModel)]="customerDetails.loyaltyCardNumber" name="loyalty">
+              </div>
+              <div class="form-group">
+                <label for="customerId">Customer Id</label>
+                <input type="text" class="form-control" id="customerId"
+                       required [readonly]="true"
+                       [(ngModel)]="customerDetails.customerId" name="customerId">
+              </div>
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username"
+                       required [readonly]="!editable || !update_username"
+                       [(ngModel)]="customerDetails.username" name="username">
+              </div>
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text"  class="form-control" id="firstName" [readonly]="!editable"
+                       [(ngModel)]="customerDetails.firstName" name="firstName">
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text"  class="form-control" id="lastName" [readonly]="!editable"
+                       [(ngModel)]="customerDetails.lastName" name="lastName">
+              </div>
+              <div class="form-group">
+                <label for="accountCreationDate">Account Creation Date</label>
+                <input type="text"  class="form-control" id="accountCreationDate" readonly
+                       [(ngModel)]="customerDetails.accountCreationDate" name="customerCreationDate">
+              </div>
+            </div>
+            <div class="card-footer h1">
+              <div *ngIf="editable && details_edit" class="padding">
+                <div class="pull-right">
+                  <button class="btn btn-success" type="submit">Update</button>
+                  <button class="btn btn-danger" type="button" (click)="onClickCancelEditCustomerButton()" >Cancel</button>
+                </div>
+              </div>
+              <div *ngIf="!editable && details_edit && customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()" class="padding">
+                <div class="pull-right">
+                  <button class="btn btn-success" (click)="onClickEditCustomerButton()" type=button>Edit</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div *ngIf="tax_exemptions" class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Tax Exemptions:</h5>
+          <div class="card-body">
+            <div *ngIf="tax_exemptions && customerDetails.taxExemptions.length === 0" >
+              <p>There are no tax exemptions associated with this customer</p>
+            </div>
+            <div *ngFor="let exemption of customerDetails.taxExemptions"
+                 class="card text-primary bg-white mb-3">
+              <div class="card-header pt-1 pb-1">Company: {{exemption.company}}</div>
+              <div class="card-body">
+                <ul>
+                  <li>State: {{exemption.state}}</li>
+                  <li>Country: {{exemption.country}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-inline-block col-lg-4">
+        <div *ngIf="act_sts" class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Manage Account Status</h5>
+          <div class="card-body">
+            <p [ngClass]="{
+            'pending' : customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase() || customerDetails.status.toString().toUpperCase() === statusSuspended.toUpperCase()
+            }">Account Status: {{accountStatusTypeMap.get(customerDetails.status)?.display}}</p>
+            <p *ngIf="customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()">
+              <button *ngIf="act_sts_reinstate && customerDetails.status.toString().toUpperCase() === statusSuspended.toUpperCase()" type="button" class="btn btn-secondary btn-grow" (click)="onClickReinstateButton()">Reinstate</button>
+              <button *ngIf="act_sts_suspend && customerDetails.status.toString().toUpperCase() !==  statusSuspended.toUpperCase()" type="button" class="btn btn-warning btn-grow" (click)="onClickSuspendButton()">Suspend</button>
+              <button *ngIf="act_sts_terminate" type="button" class="btn btn-danger btn-grow" (click)="onClickTerminateButton()">Terminate</button>
+              <button *ngIf="act_sts_protect && customerDetails.status.toString().toUpperCase() !== statusProtected.toUpperCase() && act_sts_suspend && customerDetails.status.toString().toUpperCase() !==  statusSuspended.toUpperCase()" type="button" class="btn btn-secondary btn-grow" (click)="onClickProtectButton()">Protect</button>
+            </p>
+            <p *ngIf="act_sts_terminate && customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase()">
+             <button *ngIf="act_sts_terminate" type="button" class="btn btn-danger btn-grow" (click)="onClickTerminateButton()">Terminate</button>
+            </p>
+          	<p [ngClass]="{
+            'pending' : customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase() || customerDetails.status.toString().toUpperCase() === statusSuspended.toUpperCase()
+            }">Rewards Status: {{customerDetails.rewardsEnabled ? "Active" : "Inactive"}}</p>
+            <p *ngIf="customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()">
+              <button *ngIf="act_rewards_sts && !customerDetails.rewardsEnabled" type="button" class="btn btn-warning btn-grow" (click)="onClickRewardsActivateButton()">Activate Rewards</button>
+              <button *ngIf="act_rewards_sts && customerDetails.rewardsEnabled" type="button" class="btn btn-danger btn-grow" (click)="onClickRewardsInactivateButton()">Inactivate Rewards</button>
+            </p>
+          </div>
+        </div>
+
+        <div *ngIf="(password_set_new || password_send || password_generate) && customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()" class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Reset Password</h5>
+          <div class="card-body">
+            <button *ngIf="password_generate" class="btn btn-primary pass-reset" (click)="onGenerateNewPasswordClick()" type=button>Generate New Password</button>
+            <button *ngIf="password_send" class="btn btn-secondary pass-reset" (click)="onSendForgotPasswordEmailClick()" type=button>Send Forgot Password Email</button>
+            <button *ngIf="password_set_new" class="btn btn-warning pass-reset" (click)="onSetPasswordClick()" type=button>Set New Password</button>
+          </div>
+        </div>
+
+        <div *ngIf="customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase()" class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Resend Email Verification</h5>
+          <div *ngIf="customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase()" class="card-body">
+            <button class="btn btn-primary pass-reset" (click)="onResendEmailVerificationClick()" type=button>Resend Verification Email</button>
+          </div>
+        </div>
+
+        <div *ngIf="social_integrations" class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Social Integrations</h5>
+          <div class="card-body">
+            <table>
+              <tr>
+                <td>Apple:</td>
+                <td>
+                  {{
+                  customerDetails.socialIntegration?.appleIntegration?.appleId ?
+                    customerDetails.socialIntegration?.appleIntegration?.appleId :
+                    "Not Linked"
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td>FaceBook:</td>
+                <td>{{
+                  customerDetails.socialIntegration?.facebookIntegration?.facebookId ?
+                    customerDetails.socialIntegration?.facebookIntegration?.facebookId :
+                    "Not Linked"
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td>Google:</td>
+                <td>
+                  {{
+                  customerDetails.socialIntegration?.googleIntegration?.googleId ?
+                    customerDetails.socialIntegration?.googleIntegration?.googleId  :
+                    "Not Linked"
+                  }}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Registration Campaign</h5>
+          <div class="card-body">
+            <table>
+              <tr>
+                <td>Reg Campaign:</td>
+                <td>
+                  {{
+                  customerDetails.regCampaign ?
+                    customerDetails.regCampaign :
+                    "N/A"
+                  }}
+                </td>
+              </tr>
+              <tr>
+                <td>Reg Referrer:</td>
+                <td>{{
+                  customerDetails.regReferrer ?
+                    customerDetails.regReferrer :
+                    "N/A"
+                  }}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+      <div class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Data Privacy</h5>
+          <div class="card-body">
+            <table>
+              <tr>
+                <td>Do Not Share:</td>
+                <td>
+                  {{
+                  customerDetails.isDoNotShare ?
+                    "Yes" :
+                    "No"
+                  }}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(customerDetails)">
+  <p>Loading...</p>
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="successModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Customer {{customerDetails.firstName}} {{customerDetails.lastName}}'s details have been successfully updated</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Generate New Password modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="generateNewPasswordModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Password</h5>
+        <button type="button" class="close" (click)="onClickCloseGeneratePasswordModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="!(showNewPassword)" class="modal-body bg-white text-dark">
+        <p>Generate new password for {{customerDetails.firstName}} {{customerDetails.lastName}}?</p>
+      </div>
+      <div *ngIf="(showNewPassword)" class="modal-body bg-white text-dark">
+        <p>{{customerDetails.firstName}} {{customerDetails.lastName}}'s new password is:<br>
+          {{newPassword}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button *ngIf="!showNewPassword" type="button" class="btn btn-primary btn-grow" (click)="onVerifyResetPasswordClick()"><span class="fa fa-close"></span>Verify Generate Password</button>
+        <button *ngIf="showNewPassword" type="button" class="btn btn-primary btn-grow" (click)="onClickRegeneratePassword()"><span class="fa fa-close"></span>Regenerate Password</button>
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickCloseGeneratePasswordModal()"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!---->
+<!--Set New Password modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="setPasswordModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Set New Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <form  #adminSetPassword="ngForm" (ngSubmit)="onSubmitNewPassword()">
+          <div class="form-group">
+            <label for="newPassword">Password</label>
+            <input
+              type="text"
+              class="form-control"
+              id="newPassword"
+              required
+              minlength="8"
+              [(ngModel)]="newPassword" name="newPassword"
+              #newSetPassword="ngModel"
+            >
+          </div>
+          <div *ngIf="newSetPassword.invalid && (newSetPassword.dirty || newSetPassword.touched)" class="text-danger">
+            <div *ngIf="newSetPassword.errors.required">
+              Password is required
+            </div>
+            <div *ngIf="newSetPassword.errors.minlength">
+              Password must be at least 8 characters
+            </div>
+          </div>
+          <div class="col-xs-12">
+            <button  class="btn btn-success" type = "submit" [disabled]="adminSetPassword.invalid">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!---->
+<!--confirm terminate modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="confirmTerminateModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Confirm Account Termination</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Confirm termination of account for Loyalty Card # {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})</p>
+        <p>THIS ACTION CAN NOT BE UNDONE</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-danger btn-grow" (click)="onClickConfirmTerminateAccountButton()">Confirm Terminate</button>
+        <button type="button" class="btn btn-secondary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--terminate failed modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="terminateAccountFailedModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>An error occured while trying to terminate the account with the Loyalty Card # {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})</p>
+        <p>Please try again.</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--terminate success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="terminateAccountSuccessModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" (click)="onClickCloseTerminateAccountSuccessModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Loyalty Card # {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}}) been successfully terminated.</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickCloseTerminateAccountSuccessModal()"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--send forgot password success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="sendForgotPasswordSuccessModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" (click)="onClickCloseSendForgotPasswordSuccessModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Forgot Password email has been queued for email address {{customerEmail?.emailAddress}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickCloseSendForgotPasswordSuccessModal()"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--set new password success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="setNewPasswordSuccessModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" (click)="onClickCloseSetNewPasswordSuccessModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>New password has been successfully set for user {{customerDetails.username}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickCloseSetNewPasswordSuccessModal()"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!---->
+<!--confirm Activate Rewards modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="confirmActivateRewardsModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Confirm Activation of Rewards</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Confirm Activation of rewards for Loyalty Card # {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})</p>
+        <!-- <p>THIS ACTION CAN NOT BE UNDONE</p> -->
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-warning btn-grow" (click)="onClickConfirmActivateRewardsButton()">Confirm Activate Rewards</button>
+        <button type="button" class="btn btn-secondary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!---->
+<!--confirm InActivate Rewards modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="confirmInActivateRewardsModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Confirm InActivation of Rewards</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Confirm InActivation of rewards for Loyalty Card # {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})</p>
+        <!-- <p>THIS ACTION CAN NOT BE UNDONE</p> -->
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-danger btn-grow" (click)="onClickConfirmInActivateRewardsButton()">Confirm InActivate Rewards</button>
+        <button type="button" class="btn btn-secondary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

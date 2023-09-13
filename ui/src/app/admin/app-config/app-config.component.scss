@@ -1,0 +1,38 @@
+.centerMessage {
+  font-variant: small-caps;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  &.lg {
+    font-size: 5em;
+  }
+  &.md {
+    font-size: 3em;
+  }
+}
+
+.ng-valid, .form-control.ng-valid {
+  border-color: #42A948;
+  border-left: 5px solid #42A948 !important; /* green */
+}
+.ng-invalid, .form-control.ng-invalid {
+  border-color: #a94442;
+  border-left: 5px solid #a94442 !important; /* red */
+}
+
+.td-col-value {
+  hyphens: auto;
+  width: 60%;
+  word-break: break-all;
+}
+
+table {
+  color: #375a7f;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  color: #1b2b61;
+}
+

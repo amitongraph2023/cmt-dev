@@ -1,0 +1,57 @@
+<div *ngIf="customerDetails" class="background-color">
+  <h1 class="pl-2">Missed Visit</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-6">
+        <div class="card text-primary bg-white mb-3">
+          <div class="card-body">
+            <form #f="ngForm">
+              <div class="form-group">
+                <label for="missedVisitCode">Missed Visit Code</label>
+                <input type="text" class="form-control" id="missedVisitCode"
+                       required maxlength="50"
+                       [(ngModel)]="missedVisitCodeValue" #missedVisitCode="ngModel" name="missedVisitCode">
+                <div *ngIf="(missedVisitCode.dirty) && !missedVisitCode.valid && missedVisitCode?.errors.required" [ngClass] = "'error'">
+                  Missed Visit Code is required.
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer h1">
+            <div class="padding">
+              <button class="btn btn-success pull-right" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="onSubmitMissedVisit()"  type="submit">Submit</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+​
+<div *ngIf="!(customerDetails)">
+  Loading...
+</div>
+
+<!---->
+<!--terminate success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="redeemSuccessModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" (click)="onClickCloseRedeemSuccessModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Missed visit was successfully redeemed</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickCloseRedeemSuccessModal()"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

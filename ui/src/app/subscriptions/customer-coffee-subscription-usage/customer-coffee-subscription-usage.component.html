@@ -1,0 +1,45 @@
+<h1>Coffee Subscription Usage</h1>
+<div align="right" *ngIf="cancelCoffeeSubscription && results && results.length > 0">
+  <button type="button" class="btn btn-danger btn-grow" (click)="onClickCancelSubscriptionButton()">Cancel Coffee Subscription</button>
+
+</div>
+<div *ngIf="results && results.length > 0" class="background-color padding">
+  <table>
+    <thead>
+      <th>lastModifiedDate</th>
+      <th>transaction_type</th>
+      <th>order_id</th>
+      <th>subscription_amount</th>
+      <th>tax</th>
+      <th>total_amount</th>
+      <th>card_type</th>
+      <th>last_four</th>
+      <th>cafe_nbr</th>
+      <th>billing_postal_code</th>
+      <th>promo_code</th>
+      <th>renewal_date</th>
+      <th>reward_expiration_date</th>
+    </thead>
+    <tr *ngFor="let result of results" [ngClass]="index == 0?'active':'dull-white'">
+      <td>{{result.lastModifiedDate | date: 'MM/dd/yyyy'}}</td>
+      <td>{{result.transactionType}}</td>
+      <td>{{result.orderId}}</td>
+      <td>{{result.subscriptionAmount}}</td>
+      <td>{{result.tax}}</td>
+      <td>{{result.totalAmount}}</td>
+      <td>{{result.cardType}}</td>
+      <td>{{result.lastFour}}</td>
+      <td>{{result.cafeId}}</td>
+      <td>{{result.billingPostalCode}}</td>
+      <td>{{result.promoCode}}</td>
+      <td>{{result.renewalDate | date: 'MM/dd/yyyy'}}</td>
+      <td>{{result.rewardExpirationDate | date: 'MM/dd/yyyy'}}</td>
+    </tr>
+  </table>
+  <p>&nbsp;</p>
+</div>
+
+<div *ngIf="results && results.length === 0" class="background-color ">
+  <h3 class="padding">No Coffee Subscriptions Activity Found</h3>
+</div>
+

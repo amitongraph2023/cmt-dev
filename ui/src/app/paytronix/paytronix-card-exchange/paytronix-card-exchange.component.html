@@ -1,0 +1,63 @@
+<div *ngIf="customerDetails" class="background-color">
+  <h1 class="pl-2">Card Exchange</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-6">
+        <div class="card text-primary bg-white mb-3">
+          <div class="card-body">
+            <form #f="ngForm">
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="cardNumber">Card Number</label>
+                  <input type="text" class="form-control" id="cardNumber"
+                         required maxlength="50"
+                         [(ngModel)]="customerCardExchangeForm.customerCardExchange.cardNumber" #cardNumber="ngModel" name="cardNumber">
+                  <div *ngIf="(cardNumber.dirty) && !cardNumber.valid && cardNumber?.errors.required" [ngClass] = "'error'">
+                    Card Number is required.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="regCode">Reg Code</label>
+                  <input type="text" class="form-control" id="regCode"
+                         required
+                         [(ngModel)]="customerCardExchangeForm.customerCardExchange.regCode" #regCode="ngModel" name="regCode">
+                  <div *ngIf="(regCode.dirty) && !regCode.valid && regCode?.errors.required" [ngClass] = "'error'">
+                    Reg Code is required.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="opt">Opt</label>
+                  <input type="checkbox" class="form-control" id="opt"
+                         [(ngModel)]="customerCardExchangeForm.customerCardExchange.opt" #opt="ngModel" name="opt">
+                  <div *ngIf="(opt.dirty) && !opt.valid && opt?.errors.required" [ngClass] = "'error'">
+                    Opt is required.
+                  </div>
+                </div>
+                <div class="form-group" *ngIf="hasAdminPermission">
+                  <label for="excludePX">ExcludePX</label>
+                  <input type="checkbox" class="form-control" id="excludePX"
+                         [(ngModel)]="customerCardExchangeForm.excludePX" #excludePX="ngModel" name="excludePX">
+                </div>
+                <div class="form-group" *ngIf="!hasAdminPermission">
+                  <input type="checkbox" value="false" class="form-control" hidden="true"
+                         [(ngModel)]="customerCardExchangeForm.excludePX" #excludePX="ngModel" name="excludePX">
+                </div>
+              </div>
+              <div class="card-footer h1">
+                <div class="padding">
+                  <button class="btn btn-success pull-right" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="exchangeCard()"  type="submit">Exchange Card</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+​
+​
+<div *ngIf="!(customerDetails)">
+  Loading...
+</div>
+

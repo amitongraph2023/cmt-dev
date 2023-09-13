@@ -1,0 +1,80 @@
+<div *ngIf="customerDetails">
+  <h5>Paytronix Management<br>
+    Loyalty Card #: {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})
+    <button *ngIf="updateLoyalty" type="button" class="btn btn-primary btn-grow" (click)="onClickUpdateLoyaltyButton()"><span class="fa"></span>Update Loyalty</button>
+  </h5>
+  <app-paytronix-navbar></app-paytronix-navbar>
+  <app-paytronix-balance [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('balance')"></app-paytronix-balance>
+  <app-paytronix-card-exchange [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('card-exchange')"></app-paytronix-card-exchange>
+  <app-paytronix-missed-visit [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('missed-visit')"></app-paytronix-missed-visit>
+  <app-paytronix-transactions [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('transactions')"></app-paytronix-transactions>
+</div>
+
+<div *ngIf="!customerDetails">
+  <p>Loading...</p>
+</div>
+
+<!---->
+<!--update loyalty confirm modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="updateLoyaltyConfirmModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Update Loyalty</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickConfirmUpdateLoyaltyButton()"><span class="fa fa-close"></span>Update Customer Loyalty</button>
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--update loyalty success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="updateLoyaltySuccessModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Loyalty Update</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Customer loyalty was updated successfully</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--update loyalty failed modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="updateLoyaltyFailedModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Update Loyalty</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>An error occurred while trying to update customer loyalty</p>
+        <p>Please try again.</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

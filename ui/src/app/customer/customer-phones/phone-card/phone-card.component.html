@@ -1,0 +1,123 @@
+<div class="card text-primary bg-white mb-3">
+  <form #f="ngForm">
+    <div class="card-header pt-1 pb-1">
+      <div class="card-title" >
+        <span class="pull-left">{{phone.name}}</span>
+        <span class="pull-right badge badge-primary" *ngIf="phone.isDefault">Default Phone</span>
+        <span class="pull-right" *ngIf="!(phone.isDefault) && canSetDefault"><button class="btn btn-success btn-sm pull-right" type="button" (click)="makeDefaultCustomerPhone()">Make Default</button></span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name"
+               required maxlength="50"
+               [readonly]="!(edit) && canUpdate"
+               [(ngModel)]="phone.name" #name="ngModel" name="name">
+        <div *ngIf="(name.dirty) && !name.valid && name?.errors.required" [ngClass] = "'error'">
+          Name is required
+        </div>
+      </div>
+      <div class="form-row" >
+        <div class="form-group">
+          <label for="editPhoneNumber">Phone Number</label>
+          <input type="text" class="form-control" id="editPhoneNumber"
+                 required
+                 [ngModel]="phone.phoneNumber | phonemask"
+                 (ngModelChange)="phone.phoneNumber=$event"
+                 [readonly]="!(edit) && canUpdate"
+                 #phoneNumber="ngModel" name="phoneNumber">
+          <div *ngIf="(phoneNumber.dirty) && !phoneNumber.valid && phoneNumber?.errors.required" [ngClass] = "'error'">
+            Phone number is required
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="extension">Extension</label>
+          <input type="text" class="form-control" id="extension"
+                 maxlength="10"
+                 [readonly]="!(edit) && canUpdate"
+                 [(ngModel)]="phone.extension" #extension="ngModel" name="extension">
+          <div *ngIf="(extension.dirty) && !extension.valid && extension?.errors.required" [ngClass] = "'error'">
+            Extension is required
+          </div>
+        </div>
+      </div>
+      <div *ngIf="(edit) && canUpdate" class="form-group">
+        <label for="editPhoneType">Phone Type</label>
+        <select  #phoneType="ngModel" name="phoneType" required id="editPhoneType" class="form-control select"
+                 [(ngModel)]="phone.phoneType">
+          <option *ngFor="let type of phoneTypes" [ngValue]="type">{{type}}</option>
+        </select>
+        <div *ngIf="(phoneType.dirty) && !phoneType.valid && phoneType?.errors.required" [ngClass] = "'error'">
+          Phone type is required
+        </div>
+      </div>
+      <div *ngIf="!(edit)" class="form-group">
+        <label for="phoneType">Phone Type</label>
+        <select name="phoneType" required id="phoneType" class="form-control select"
+                [(ngModel)]="phone.phoneType">
+          <option [ngValue]="phone.phoneType">{{phone.phoneType}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-footer h1">
+      <div class="padding" *ngIf="!(edit) && (canUpdate || canDelete)">
+        <button class="btn btn-success pull-right btn-spacing" (click)="clickEditPhone()" type="button">Edit</button>
+        <button *ngIf="!phone.isDefault && canDelete" class="btn btn-danger pull-right btn-spacing" (click)="confirmDelete()" type="button">Delete</button>
+      </div>
+      <div class="padding" *ngIf="(edit) && (canUpdate || canDelete)">
+        <button class="btn btn-secondary pull-right"  (click)="cancelUpdateCustomerPhone()" type="button">Cancel</button>
+        <button *ngIf="!phone.isDefault && canDelete" class="btn btn-danger pull-right btn-spacing" (click)="confirmDelete()" type="button">Delete</button>
+        <button *ngIf="phone.isDefault && canDelete" class="btn btn-danger pull-right btn-spacing" disabled type="button"
+                title="Cannot delete default phone">Delete</button>
+        <button *ngIf="canUpdate" class="btn btn-success pull-right btn-spacing" [class.btn-grow]="f.valid" [disabled]="!f.valid" (click)="updateCustomerPhone()" type="submit">Update</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!---->
+<!-- Delete customer phone confirmation modal -->
+<!---->
+<div class="modal fade h100" id="deleteConfirmModal{{phone.id}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p><strong>Please confirm that you want to delete this phone number.</strong></p>
+        <div class="pull-right">
+          <button class="btn btn-danger" (click)="deletePhone()" type="button">Delete</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal{{phone.id}}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

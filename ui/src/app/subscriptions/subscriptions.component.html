@@ -1,0 +1,23 @@
+<div *ngIf="customerDetails">
+  <h5 [ngClass]="{
+  'terminated' : customerDetails.status.toString().toUpperCase() === statusTerminated.toUpperCase(),
+  'pending' : customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase() || customerDetails.status.toString().toUpperCase() === statusSuspended.toUpperCase(),
+  'protected' : customerDetails.status.toString().toUpperCase() === statusProtected.toUpperCase(),
+  'not-active' : customerDetails.status.toString().toUpperCase() !== statusActive.toUpperCase() && customerDetails.status.toString().toUpperCase() !== statusTerminated.toUpperCase() && customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase() && customerDetails.status.toString().toUpperCase() !== statusProtected.toUpperCase()
+  }">Subscription Management<br>
+    <span *ngIf="customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()">Loyalty Card #: {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})
+    </span>
+    <span *ngIf="customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase()">Account is pending verification</span>
+  </h5>
+  <app-subscription-navbar *ngIf="customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()"></app-subscription-navbar>
+  <app-gift-coffee *ngIf="isRoute('gift-coffee')"></app-gift-coffee>
+  <app-customer-gift-coffee-subscriptions [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('gift-coffee-subscriptions')"></app-customer-gift-coffee-subscriptions>
+  <app-customer-coffee-subscription-usage [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('coffee-subscription-usage')"></app-customer-coffee-subscription-usage>
+</div>
+
+<div *ngIf="!customerDetails">
+  <p>Loading...</p>
+</div>
+
+
+

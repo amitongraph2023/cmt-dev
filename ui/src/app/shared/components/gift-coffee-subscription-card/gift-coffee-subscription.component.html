@@ -1,0 +1,22 @@
+<div *ngIf="(giftCoffeeSubscription)" class="background-color">
+  <h4 class="pl-2">Gift Coffee Subscriptions for {{giftCoffeeSubscription.purchaserEmail}}</h4>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <h5 class="card-header pt-1 pb-1">Order # {{giftCoffeeSubscription.purchaseOrderId}}</h5>
+        <div class="card-body text-primary bg-light mb-3">
+          <p>Customer ID: {{giftCoffeeSubscription.customerId}}</p>
+          <p>Purchase Cafe ID: {{giftCoffeeSubscription.purchaseCafeId}}</p>
+          <p>Purchase Date: {{giftCoffeeSubscription.purchaseDateTime}}</p>
+          <ng-template ngFor let-giftCode [ngForOf]="giftCoffeeSubscription.giftCodes">
+            <app-gcs-code-card [giftCode]="giftCode" [giftCoffeeSubscription]="giftCoffeeSubscription" ></app-gcs-code-card>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(giftCoffeeSubscription)">
+  Loading...
+</div>

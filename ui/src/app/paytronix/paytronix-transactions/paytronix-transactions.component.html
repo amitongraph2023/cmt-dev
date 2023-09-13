@@ -1,0 +1,68 @@
+<div *ngIf="customerDetails && transactions" class="background-color">
+  <h1 class="pl-2">Transaction History</h1>
+  <div class="section col-xl-12">
+    <div class="row">
+      <div class="d-inline-block col-xl-12">
+        <div class="card text-primary bg-white mb-3">
+          <div class="card-body">
+            <div class="card-header pt-1 pb-1">
+              <div class="card-title row">Date Range:&nbsp;&nbsp;
+                <span class="radio" *ngFor="let dayOption of daysOptions">
+              <label>
+                <input
+                  type="radio"
+                  name="pref"
+                  [value]="dayOption.value"
+                  (change)="onDayOptionChange($event)"
+                  [checked]=" days === dayOption.value"
+                >
+                {{ dayOption.name }}
+                <span *ngIf="dayOption !== daysOptions[daysOptions.length-1]" >&nbsp;|&nbsp;&nbsp;</span>
+              </label>
+            </span>
+              </div>
+            </div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">Date of Transaction</th>
+                <th scope="col">OrderId</th>
+                <th scope="col">Store Number</th>
+                <th scope="col">Transaction Type</th>
+                <th scope="col">Details</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let transaction of transactions | paginate: config">
+                <td>{{transaction.datetime | date:'MMM d, yyyy hh:mm:ss a'}}</td>
+                <td>{{transaction.posTransactionNumber}}</td>
+                <td>{{transaction.storeCode}}</td>
+                <td>{{transaction.transactionType}}</td>
+                <td>
+                  <ul>
+                    <li *ngFor="let detail of transaction.details">
+                      Balance:{{ detail.balance }}<br>
+                      Redeemed: {{ detail.redeemed }}<br>
+                      Wallet Code: {{ detail.walletCode }}<br>
+                      Wallet Name: {{ detail.walletName }} <br>
+                      Accrued: {{ detail.accrued }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer text-black-50 bg-white mb-3">
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(customerDetails && transactions)">
+  Loading...
+</div>
+

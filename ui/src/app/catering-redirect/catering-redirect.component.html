@@ -1,0 +1,17 @@
+<div class="card text-primary bg-white mb-3">
+  <div class="card-header pt-1 pb-1">
+    <div class="card-title" >
+      Resource Moved
+    </div>
+  </div>
+  <div class="card-body">
+    <h1>Resource Moved:</h1>
+    <h3>Catering orders must now be placed in the Catering Impersonation Tool (CIT).</h3>
+    <h4>It can be accessed at: <a [href]="cateringRedirectUrl">{{cateringRedirectUrl}}</a></h4>
+    <p>Please update your bookmarks.</p>
+  </div>
+
+  <div class="card-footer">
+    <button type="button" class="btn btn-danger" (click)="onLogoutClick()"><i class="fa fa-sign-out"></i> Logout</button>
+  </div>
+</div>

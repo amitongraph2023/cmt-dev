@@ -1,0 +1,74 @@
+<div id="search-holder" class="card text-primary">
+  <form (ngSubmit)="search()" #searchUserForm="ngForm">
+    <div class="row">
+      <div class="col-sm-5 form-group float-right">
+        <span>
+        <input type="text" id="searchValue" class="form-control" name="searchValue" [(ngModel)]="searchValue">
+          </span>
+      </div>
+      <div class="col-sm-2 form-group float-right">
+        <select name="searchType" id="searchType" class="form-control" [(ngModel)]="searchType" >
+          <option *ngFor="let type of searchTypes.key()" [value]="type.toString()">{{type}}</option>
+        </select>
+      </div>
+      <div class="col-xs-12 float-right">
+        <button class="btn btn-success" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!---->
+<!--Customer not found modal-->
+<!---->
+<div class="modal fade h100" id="customerNotFoundModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Customer not found</h5>
+        <button type="button" class="close" (click)="closeCustomerNotFoundModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p><strong>Customer not found</strong></p>
+        <div class="pull-right">
+          <button class="btn btn-primary" (click)="closeCustomerNotFoundModal()" type="button">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Select customer modal-->
+<!---->
+<div class="modal fade h100" id="selectCustomerModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg h-80" role="document">
+    <div class="modal-content h-100">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="aggregationModalLabel"><span class="fa fa-tag"></span> Select Customer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark h-100" id="modal-body-75">
+        <div class="h-100" id="selectCustomerHolder">
+          <form (ngSubmit)="selectedUser(selectUserForm)" #selectUserForm="ngForm">
+            <div class="radio" *ngFor="let user of foundUsers">
+              <label>
+                <input type="radio" name="customerId" [value]="user.customerId" [(ngModel)]="user.customerId">
+                {{user.firstName}} {{user.lastName}} ({{user.username}})
+              </label>
+            </div>
+            <div class="col-xs-12">
+              <button class="btn btn-success" type="submit">Select</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

@@ -1,0 +1,97 @@
+<div *ngIf="(customerPreferences && allFoodPreferences && allGatherPreferences)"  class="background-color">
+  <h1 class="pl-2">Tastes and Interests</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <!-- Food Preferences Form-->
+        <div *ngIf="canViewFoodPrefs">
+          <div class="card text-primary bg-white mb-3">
+            <form (ngSubmit)="updateGatherPreferences()" #gatherPreferencesForm="ngForm">
+              <div class="card-header pt-1 pb-1">
+                <div class="card-title">Gathering Preferences</div>
+              </div>
+              <div class="card-body">
+                <div class="radio" *ngFor="let pref of allGatherPreferences">
+                  <label *ngIf="pref && pref.code">
+                    <input
+                      type="radio"
+                      name="pref"
+                      [value]="pref.code"
+                      (change)="radioChangeGatherPrefsHandler($event)"
+                      [readOnly]="!canUpdateGatherPrefs"
+                      [disabled]="!canUpdateGatherPrefs"
+                      [checked]=" !isGatherPreferencesNull && pref.code === customerPreferences.gatherPreference.code"
+                    >
+                    {{ pref.displayName }}
+                  </label>
+                </div>
+              </div>
+              <div *ngIf="canUpdateFoodPrefs" class="card-footer h1">
+                <button class="btn btn-success" type="submit">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Gather Preferences Form -->
+      <div class="d-inline-block col-lg-5">
+        <div *ngIf="canViewGatherPrefs">
+          <div class="card text-primary bg-white mb-3">
+            <form (ngSubmit)="updateFoodPreferences()" #foodPreferencesForm="ngForm">
+              <div class="card-header pt-1 pb-1">
+                <div class="card-title">Food Preferences</div>
+              </div>
+              <div class="card-body">
+                <div class="checkbox" *ngFor="let pref of allFoodPreferences">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [value]="pref.code"
+                      (change)="checkChangeFoodPrefsHandler($event)"
+                      [readOnly]="!canUpdateFoodPrefs"
+                      [disabled]="!canUpdateFoodPrefs"
+                      [checked]=" !isFoodPreferencesNull && pref.value"
+                    >
+                    {{pref.displayName}}</label>
+                </div>
+              </div>
+              <div *ngIf="canUpdateGatherPrefs" class="card-footer h1">
+                <button class="btn btn-success" type="submit">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(customerPreferences && allFoodPreferences && allGatherPreferences)">
+  Loading...
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

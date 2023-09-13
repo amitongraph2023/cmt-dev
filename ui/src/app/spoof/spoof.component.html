@@ -1,0 +1,7 @@
+<div><app-spoof-info-bar (returnToCmtClicked)="returnToCmtClicked($event)" ></app-spoof-info-bar></div>
+<div *ngIf="spoofHTML === ''">
+  Loading...
+</div>
+<div *ngIf="spoofHTML !== ''">
+  <div [innerHTML]="spoofHTML | safe: 'html'"></div>
+</div>

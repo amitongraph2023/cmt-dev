@@ -1,0 +1,92 @@
+<div *ngIf="customerDetails">
+  <h5 [ngClass]="{
+  'terminated' : customerDetails.status.toString().toUpperCase() === statusTerminated.toUpperCase(),
+  'pending' : customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase() || customerDetails.status.toString().toUpperCase() === statusSuspended.toUpperCase(),
+  'protected' : customerDetails.status.toString().toUpperCase() === statusProtected.toUpperCase(),
+  'not-active' : customerDetails.status.toString().toUpperCase() !== statusActive.toUpperCase() && customerDetails.status.toString().toUpperCase() !== statusTerminated.toUpperCase() && customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase() && customerDetails.status.toString().toUpperCase() !== statusProtected.toUpperCase()
+  }">Account Management<br>
+    <span *ngIf="customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()">Loyalty Card #: {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})
+    <button *ngIf="updateLoyalty && customerDetails.status !== statusPending && customerDetails.status !== statusSuspended" type="button" class="btn btn-primary btn-grow" (click)="onClickUpdateLoyaltyButton()"><span class="fa"></span>Update Loyalty</button>
+    </span>
+    <span *ngIf="customerDetails.status.toString().toUpperCase() === statusPending.toUpperCase()">Account is pending verification</span>
+  </h5>
+  <app-customer-navbar *ngIf="customerDetails.status.toString().toUpperCase() !== statusPending.toUpperCase()"></app-customer-navbar>
+  <app-customer-info [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('customer-info')"></app-customer-info>
+  <app-customer-phones [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('phones')"></app-customer-phones>
+  <app-customer-addresses [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('addresses')"></app-customer-addresses>
+  <app-customer-emails [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('emails')"></app-customer-emails>
+  <app-customer-payment-options [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('payment-options')"></app-customer-payment-options>
+  <app-customer-preferences  [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('preferences')"></app-customer-preferences>
+  <app-customer-subscriptions [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('subscriptions')"></app-customer-subscriptions>
+  <app-mfa [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('mfa')"></app-mfa>
+  <app-customer-coffee-subscription-usage [customerDetails]="customerDetails" *ngIf="customerDetails && isRoute('coffee-subscription-usage')"></app-customer-coffee-subscription-usage>
+  </div>
+
+<div *ngIf="!customerDetails">
+  <p>Loading...</p>
+</div>
+
+<!---->
+<!--update loyalty confirm modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="updateLoyaltyConfirmModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Update Loyalty</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" (click)="onClickConfirmUpdateLoyaltyButton()"><span class="fa fa-close"></span>Update Customer Loyalty</button>
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--update loyalty success modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="updateLoyaltySuccessModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Loyalty Update</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>Customer loyalty was updated successfully</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--update loyalty failed modal-->
+<!---->
+<div *ngIf="(customerDetails)" class="modal fade" tabindex="-1" role="dialog" id="updateLoyaltyFailedModal">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Update Loyalty</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>An error occurred while trying to update customer loyalty</p>
+        <p>Please try again.</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div *ngIf="!loading">
+  <h5>Limited Time Offers<br>
+    Loyalty Card #: {{customerDetails.loyaltyCardNumber}} ({{customerDetails.firstName}} {{customerDetails.lastName}})</h5>
+  <app-lto-navbar></app-lto-navbar>
+  <app-lto-code *ngIf="isRoute('code')"></app-lto-code>
+</div>
+
+<div *ngIf="loading">
+  <p>Loading...</p>
+</div>

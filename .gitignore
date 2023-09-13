@@ -1,0 +1,40 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+!customermanagementtool.iml
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+cmt.log*
+
+### Node ####
+package-lock.json
+ui/node_modules/*
+ui/node_modules
+ui/~
+!ui/node_modules/node-sass
+Service_Delivery_Template_CMT.xlsx
+ui/dist
+ui/tmp
+### Static ###
+# src/main/resources/static
+# ui/src/assets/js/version.js

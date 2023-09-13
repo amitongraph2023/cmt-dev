@@ -1,0 +1,27 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./src/",
+    "paths": {
+      "@collections/*": ["app/shared/collections/*"],
+      "@components/*": ["app/shared/components/*"],
+      "@enums/*": ["app/shared/enums/*"],
+      "@models/*": ["app/shared/models/*"],
+      "@services/*": ["app/shared/services/*"]
+    },
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  }
+}

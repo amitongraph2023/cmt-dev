@@ -1,0 +1,134 @@
+<div class="card text-primary bg-white mb-3">
+  <form #f="ngForm">
+    <div class="card-header pt-1 pb-1">
+      <div class="card-title" >
+        <span class="pull-left">{{campusCard.customerCampusCardName}}</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="ccPaymentLabel">Payment Label</label>
+        <input #ccPaymentLabel="ngModel" type="text" class="form-control" id="ccPaymentLabel"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="campusCard.customerCampusCardName" name="ccLabel">
+        <div *ngIf="(ccPaymentLabel.dirty) && !ccPaymentLabel.valid && ccPaymentLabel?.errors.required" [ngClass] = "'error'">
+          Payment label is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ccInstitutionLongName">Institution Long Name</label>
+        <input #ccInstitutionLongName="ngModel" type="text" class="form-control" id="ccInstitutionLongName"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="campusCard.institutionLongName" name="ccInstitutionLongName">
+        <div *ngIf="(ccInstitutionLongName.dirty) && !ccInstitutionLongName.valid && ccInstitutionLongName?.errors.required" [ngClass] = "'error'">
+          Institution long name is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ccInstitutionShortName">Institution Short Name</label>
+        <input #ccInstitutionShortName="ngModel" type="text" class="form-control" id="ccInstitutionShortName"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="campusCard.institutionShortName" name="ccInstitutionShortName">
+        <div *ngIf="(ccInstitutionShortName.dirty) && !ccInstitutionShortName.valid && ccInstitutionShortName?.errors.required" [ngClass] = "'error'">
+          Institution short name is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ccProviderName">Provider Name</label>
+        <input #ccProviderName="ngModel" type="text" class="form-control" id="ccProviderName"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="campusCard.providerName" name="ccProviderName">
+        <div *ngIf="(ccProviderName.dirty) && !ccProviderName.valid && ccProviderName?.errors.required" [ngClass] = "'error'">
+          Provider name is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ccProgramName">Program Name</label>
+        <input #ccProgramName="ngModel" type="text" class="form-control" id="ccProgramName"
+               required
+               [readonly]="!(edit)"
+               [(ngModel)]="campusCard.programName" name="ccProgramName">
+        <div *ngIf="(ccProgramName.dirty) && !ccProgramName.valid && ccProgramName?.errors.required" [ngClass] = "'error'">
+          Program name is required
+        </div>
+      </div>
+        <div class="form-group">
+          <label for="ccExpirationDate">Expiration Date</label>
+          <input #ccExpirationDate="ngModel" type="text" class="form-control" id="ccExpirationDate"
+                 required
+                 minlength="4" maxlength="4"
+                 (focusout)="expirationValidator(ccExpirationDate.value)"
+                 [readonly]="!(edit)" 
+                 [(ngModel)]="campusCard.expirationDate" name="ccExpirationDate"
+          >
+          <div *ngIf="(ccExpirationDate.dirty) && !ccExpirationDate.valid && ccExpirationDate?.errors.required" [ngClass] = "'error'">
+            Expiration date is required
+          </div>
+          <div *ngIf="!validExpiration" [ngClass] = "'error'">Expiration Date Occurs in Past</div>
+        </div>
+        <div class="form-group">
+          <label for="ccPostalCode">Postal Code</label>
+          <input #ccZip="ngModel" type="text" class="form-control" id="ccPostalCode"
+                 required
+                 [readonly]="true"
+                 [(ngModel)]="campusCard.postalCode" name="ccPostalCode">
+        </div>      
+    </div>
+    <div *ngIf="canDelete" class="card-footer">
+      <div class="padding" *ngIf="(edit)">
+        <button class="btn btn-danger pull-right" (click)="confirmDelete()" type="button">Delete</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!---->
+<!-- Delete credit card confirmation modal -->
+<!---->
+<div class="modal fade h100" id="deleteConfirmModal{{campusCard.campusCardToken}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p><strong>Please confirm that you want to delete this campus card.</strong></p>
+        <div class="pull-right">
+          <button class="btn btn-danger" (click)="deleteCampusCard()" type="button">Delete</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal{{campusCard.campusCardToken">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

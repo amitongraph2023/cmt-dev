@@ -1,0 +1,104 @@
+<div *ngIf="(customerEmails)"  class="background-color">
+  <h1 class="pl-2">Email Addresses</h1>
+  <div class="section col-lg-10 col-sm-16">
+    <div *ngIf="(customerEmails.length === 0)" class="card text-primary bg-white mb-3">
+      <div class="card-header pt-1 pb-1">
+        <div class="card-title" >
+          <span class="pull-left">No Email Addresses Associated</span></div>
+      </div>
+      <div class="card-body">
+        <div>
+          <strong>There are currently no email addresses associated with this account.</strong>
+          <p *ngIf="!canCreate">Please contact Prod Support to add an email address.</p>
+        </div>
+        <div>
+          <button *ngIf="canCreate" class="btn btn-success" type="button" (click)="clickAddNewEmail()">Add Email Address</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="customerEmails.length > 0" >
+      <ng-template ngFor let-email [ngForOf]="customerEmails">
+        <app-email-card  [email]="email" [customerDetails]="customerDetails" (updatedEmail)="loadCustomerEmails()"></app-email-card>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(customerEmails)">
+  Loading...
+</div>
+
+<!---->
+<!-- Add Email modal -->
+<!---->
+<div *ngIf="addEmail" class="modal fade h100" id="addEmailModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-md h-40" role="document">
+    <div class="modal-content h-100">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="addgcAggregationModalLabel"><span class="fa fa-tag"></span>Add New Email Address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="loadCustomerEmails()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark h-100" id="gcmodal-body-75">
+        <div class="h-100" id="emailSelectCustomerHolder">
+          <form  #addEmailForm="ngForm">
+            <div class="form-group">
+              <label for="emailAddress">Email Address</label>
+              <input #emailAddress="ngModel" type="text" class="form-control" id="emailAddress"
+                     required minlength="1" maxlength="100"
+                     [(ngModel)]="newEmail.emailAddress" name="emailAddress">
+              <div *ngIf="emailAddress.invalid && (emailAddress.dirty || emailAddress.touched)" [ngClass] = "'error'">
+                <div *ngIf="emailAddress.errors.required">
+                  Email address is required.
+                </div>
+                <div *ngIf="emailAddress.errors.minlength">
+                  Email address must be at least 1 characters long.
+                </div>
+                <div *ngIf="emailAddress.errors.maxlength">
+                  Email address must not exceed 100 characters.
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="editEmailType">Email Type</label>
+              <select  #emailType="ngModel" name="emailType" required id="editEmailType" class="form-control select"
+                       [(ngModel)]="newEmail.emailType">
+                <option *ngFor="let type of emailTypes.key()" [ngValue]="type">{{type}}</option>
+              </select>
+              <div *ngIf="(emailType.dirty) && !emailType.valid && emailType?.errors.required" [ngClass] = "'error'">
+                Email type is required
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <button  class="btn btn-success" (click)="addEmailAddress()" type="submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,62 @@
+<div *ngIf="customerDetails && balance" class="background-color">
+  <h1 class="pl-2">Paytronix Balance</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-6">
+        <div class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Reward Balance(s)</h5>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">Rewards Available</th>
+                <th scope="col"># Available</th>
+                <th scope="col">Expiration</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let rewardBalance of balance.rewardBalances">
+                <td>{{rewardBalance.name}}</td>
+                <td>{{rewardBalance.balance}}</td>
+                <td>
+                  <ul>
+                    <li *ngFor="let expiration of rewardBalance.expirations">
+                      {{expiration.amount}} expires on {{expiration.expirationDate}}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="d-inline-block col-lg-4">
+        <div class="card text-primary bg-white mb-3">
+          <h5 class="card-header pt-1 pb-1">Point(s)</h5>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Balance</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let pointBalance of balance.pointBalances">
+                <td>{{pointBalance.name}}</td>
+                <td>{{pointBalance.balance}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="!(customerDetails && balance)">
+  Loading...
+</div>

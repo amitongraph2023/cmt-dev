@@ -1,0 +1,76 @@
+<div *ngIf="(!loading)" class="background-color">
+  <h1 class="pl-2">Find By Code</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <div class="card text-primary bg-white mb-3">
+          <form #f="ngForm">
+            <div class="card-header pt-1 pb-1">
+              <div class="card-title" >
+                <h5>Search</h5>
+              </div>
+            </div>
+            <div class="card-body">
+
+              <div class="form-group">
+                <label for="specialCode">Special Code</label>
+                <input #specialCode="ngModel" type="text" class="form-control" id="specialCode"
+                       required
+                       [(ngModel)]="searchCode" name="specialCode">
+                <div *ngIf="(specialCode.dirty) && !specialCode.valid && specialCode?.errors.required" [ngClass] = "'error'">
+                  Special code is required
+                </div>
+              </div>
+            </div>
+            <div class="card-footer h1">
+              <div class="padding">
+                <button class="btn btn-secondary pull-right"  (click)="onClickResetButton()" type="button">Reset</button>
+                <button class="btn btn-success pull-right" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="onClickSearchButton()" type="submit">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div *ngIf="result">
+        <div class="d-inline-block col-lg-5">
+          <div class="card text-primary bg-white mb-3">
+            <div class="card-header pt-1 pb-1">
+              <h5>Limited Time Offer: {{result.specialCode}}</h5>
+            </div>
+            <div class="card-body">
+              <table>
+                <tr>
+                  <td>Business Unit:</td>
+                  <td>{{result.businessUnit}}</td>
+                </tr>
+                <tr>
+                  <td>Discount:</td>
+                  <td>{{result.discount}}</td>
+                </tr>
+                <tr>
+                  <td>Start Date/Time:</td>
+                  <td>{{result.startDateTime}}</td>
+                </tr>
+                <tr>
+                  <td>End Date/Time:</td>
+                  <td>{{result.endDateTime}}</td>
+                </tr>
+                <tr>
+                  <td>Cafe(s):</td>
+                  <td>
+              <span *ngFor="let cafe of result.cafes">
+                <span *ngIf="cafe === result.cafes[result.cafes.length-1] && cafe === result.cafes[0]">{{cafe.cafeId}}</span>
+                <span *ngIf="cafe === result.cafes[result.cafes.length-1] && cafe !== result.cafes[0]"> {{cafe.cafeId}}</span>
+                <span *ngIf="cafe !== result.cafes[result.cafes.length-1] && cafe === result.cafes[0]"> {{cafe.cafeId}},</span>
+                <span *ngIf="cafe !== result.cafes[result.cafes.length-1] && cafe !== result.cafes[0]"> {{cafe.cafeId}},</span>
+              </span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>>
+      </div>
+    </div>
+  </div>
+</div>

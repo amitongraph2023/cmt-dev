@@ -1,0 +1,74 @@
+html{
+  height:100%;
+}
+body{
+  height:100%;
+}
+
+
+.left{
+  color: white;
+  height : 100%;
+  padding-left: 5em;
+  padding-bottom: 1em;
+}
+
+.right{
+  color : white;
+  height : 100%;
+  padding-left: 6em;
+  display : block;
+  padding-bottom: 4em;
+
+}
+
+
+li {
+  list-style: none;
+}
+
+.background-color {
+  background: #375a7f;
+}
+
+hr {
+  background-color: white;
+  height: 1px;
+  border: 0;
+  width: 80%;
+}
+
+.heading {
+  text-align: right;
+  font-weight: bold;
+}
+
+td {
+  padding-right: 0.1em;
+  padding-left: 0.1em;
+  font-size: .8em;
+}
+
+
+.padding {
+  padding: 0 0 1em;
+}
+
+.section {
+  padding-left: 1em;
+}
+
+.error {
+  color: red;
+  font-variant-caps: all-small-caps;
+}
+
+.form-group {
+  padding: 0 0 0 0.5em;
+}
+
+table {
+  color: #375a7f;
+}
+
+

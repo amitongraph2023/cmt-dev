@@ -1,0 +1,54 @@
+html{
+  height:100%;
+}
+body{
+  height:100%;
+}
+
+li {
+  list-style: none;
+}
+
+.background-color {
+  background: #375a7f;
+}
+
+hr {
+  background-color: white;
+  height: 1px;
+  border: 0;
+  width: 80%;
+}
+
+.heading {
+  text-align: right;
+  font-weight: bold;
+}
+
+td {
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+}
+
+
+.section {
+  padding: 0.5em 0.5em 1em;
+
+}
+
+.padding {
+  padding: 0 0 1em;
+}
+
+.error {
+  color: red;
+  font-variant-caps: all-small-caps;
+}
+
+.form-group {
+  padding: 0 0 0 0.5em;
+}
+
+.section {
+  padding-left: 1em;
+}

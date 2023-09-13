@@ -1,0 +1,119 @@
+<div *ngIf="(customerPhones1)" class="background-color">
+  <h1 class="pl-2">Phone Numbers</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <div *ngIf="canCreate" class="padding">
+          <button class="btn btn-success" type="button" (click)="createNewPhone()">Create New Phone</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <ng-template ngFor let-phone [ngForOf]="customerPhones1">
+          <app-phone-card [customerDetails]="customerDetails" [phone]="phone" [phoneTypes]="phoneTypes" (updatedPhone)="loadCustomerPhones()"></app-phone-card>
+        </ng-template>
+      </div>
+      <div class="d-inline-block col-lg-5">
+        <ng-template ngFor let-phone [ngForOf]="customerPhones2">
+          <app-phone-card [customerDetails]="customerDetails" [phone]="phone" [phoneTypes]="phoneTypes" (updatedPhone)="loadCustomerPhones()"></app-phone-card>
+        </ng-template>
+      </div>
+    </div>
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <div *ngIf="canCreate" class="padding">
+          <button class="btn btn-success" type="button" (click)="createNewPhone()">Create New Phone</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(customerPhones1)">
+  Loading...
+</div>
+
+<!---->
+<!-- Add customer phone modal -->
+<!---->
+<div class="modal fade h-85" id="addCustomerPhoneModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg h-80" role="document">
+    <div class="modal-content h-100">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="aggregationModalLabel"><span class="fa fa-tag"></span>Add New Customer Phone Number</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="loadCustomerPhones()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark h-100" id="modal-body-75">
+        <div class="h-100" id="selectCustomerHolder" *ngIf="newCustomerPhone && phoneTypes" >
+          <form  #f="ngForm" >
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name"
+                     required maxlength="50"
+                     [(ngModel)]="newCustomerPhone.name" #name="ngModel" name="name">
+              <div *ngIf="(name.dirty) && !name.valid && name?.errors.required" [ngClass] = "'error'">
+                Name is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addPhoneNumber">Phone Number</label>
+              <input type="text" class="form-control" id="addPhoneNumber"
+                     required
+                     [(ngModel)]="newCustomerPhone.phoneNumber"
+                     #phoneNumber="ngModel" name="phoneNumber">
+              <div *ngIf="(phoneNumber.dirty) && !phoneNumber.valid && phoneNumber?.errors.required" [ngClass] = "'error'">
+                Phone number is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="extension">Extension</label>
+              <input type="text" class="form-control" id="extension"
+                     maxlength="10"
+                     [(ngModel)]="newCustomerPhone.extension" #extension="ngModel" name="extension">
+              <div *ngIf="(extension.dirty) && !extension.valid && extension?.errors.required" [ngClass] = "'error'">
+                Extension is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="phoneType">Phone Type</label>
+              <select name="phoneType" #phoneType="ngModel" required id="phoneType" class="form-control select" [(ngModel)]="newCustomerPhone.phoneType">
+                <option *ngFor="let type of phoneTypes" [ngValue]="type">{{type}}</option>
+              </select>
+              <div *ngIf="(phoneType.dirty) && !phoneType.valid && phoneType?.errors.required" [ngClass] = "'error'">
+                Phone type is required.
+              </div>
+            </div>
+            <div class="padding">
+              &nbsp;
+              <button class="pull-right btn btn-success" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="addCustomerPhone()"  type="submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

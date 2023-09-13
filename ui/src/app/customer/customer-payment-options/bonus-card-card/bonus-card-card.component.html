@@ -1,0 +1,115 @@
+<div class="card text-primary bg-white mb-3">
+  <form #f="ngForm">
+    <div class="card-header pt-1 pb-1">
+      <div class="card-title" >
+        {{bonusCard.cardNickname}}
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="bcCardNickname">Card Nickname</label>
+        <input #bcCardNickname="ngModel" type="text" class="form-control" id="bcCardNickname"
+               required
+               [readonly]="!(edit) && canUpdate"
+               [(ngModel)]="bonusCard.cardNickname" name="bcCardNickname">
+        <div *ngIf="(bcCardNickname.dirty) && !bcCardNickname.valid && bcCardNickname?.errors.required" [ngClass] = "'error'">
+          Bonus card nickname is required
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="bcCardNumber">Card Number</label>
+        <input #bcCardNumber="ngModel" type="text" class="form-control" id="bcCardNumber"
+               required
+               [(ngModel)]="bonusCard.cardNumber" name="bcCardNumber">
+        <div *ngIf="(bcCardNumber.dirty) && !bcCardNumber.valid && bcCardNumber?.errors.required" [ngClass] = "'error'">
+          Gift card number is required
+        </div>
+      </div>
+      
+        <div class="form-group">
+          <label for="bcStartDate">Start Date</label>
+          <input #bcStartDate="ngModel" type="text" class="form-control" id="bcStartDate"
+                 required
+                 minlength="4" maxlength="4"
+                 [readonly]="!(edit) && canUpdate"
+                 [(ngModel)]="bonusCard.effectiveStartDate" name="bcStartDate"
+          >
+          <div *ngIf="(bcStartDate.dirty) && !bcStartDate.valid && bcStartDate?.errors.required" [ngClass] = "'error'">
+            Start date is required
+          </div>
+        </div>
+        
+
+        <div class="form-group">
+          <label for="bcEndDate">End Date</label>
+          <input #bcEndDate="ngModel" type="text" class="form-control" id="bcEndDate"
+                 required
+                 minlength="4" maxlength="4"
+                 [readonly]="!(edit) && canUpdate"
+                 [(ngModel)]="bonusCard.effectiveEndDate" name="bcEndDate"
+          >
+          <div *ngIf="(bcEndDate.dirty) && !bcEndDate.valid && bcEndDate?.errors.required" [ngClass] = "'error'">-->
+            End date is required
+          </div>
+        </div>
+        
+    </div>
+    <div *ngIf="canUpdate || canDelete" class="card-footer">
+      <div class="padding" *ngIf="!(edit)">&nbsp;
+        <button *ngIf="canDelete" class="btn btn-danger pull-right" (click)="confirmDelete()" type="button">Delete</button>
+      </div>
+      <div class="padding" *ngIf="(edit)">
+        <button class="btn btn-secondary pull-right"  (click)="cancelUpdateBonusCard()" type="button">Cancel</button>
+        <button *ngIf="canDelete" class="btn btn-danger pull-right" (click)="confirmDelete()" type="button">Delete</button>
+        <button *ngIf="canUpdate" class="btn btn-success pull-right" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="updateBonusCard()" type="submit">Update</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!---->
+<!-- Delete bonus card confirmation modal -->
+<!---->
+<div class="modal fade h100" id="deleteConfirmModal{{bonusCard.cardNumber}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p><strong>Please confirm that you want to delete this bonus card.</strong></p>
+        <div class="pull-right">
+          <button class="btn btn-danger" (click)="deleteBonusCard()" type="button">Delete</button>
+          <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal{{bonusCard.cardNumber}}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

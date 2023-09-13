@@ -1,0 +1,38 @@
+esb:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+chub:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+eps:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+iso2:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+iso3:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+lmt:
+  auth: d2VidTpwYXNz
+  base-url: https://lto-test.paneracloud.com/lto/api/external/
+png:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+sso:
+  auth: ALHFSDHIFHIDUF
+  base-url: http://localhost:8080
+subscription-service:
+  base-url: https://lto-test.paneracloud.com/lto/api/external/
+  env: qa
+---
+spring:
+  profiles: integration-test
+
+  datasource:
+    url: jdbc:h2:mem:testDb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect

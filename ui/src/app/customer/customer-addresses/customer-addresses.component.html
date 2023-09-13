@@ -1,0 +1,207 @@
+<div *ngIf="(customerAddresses1 && addressTypes && countries && states && provinces)" class="background-color">
+  <h1 class="pl-2">Addresses</h1>
+  <div class="section col-lg-16 col-sm-20">
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <div *ngIf="canCreate" class="padding">
+          <button class="btn btn-success" type="button" (click)="createNewAddress()">Create New Address</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <ng-template ngFor let-address [ngForOf]="customerAddresses1">
+          <app-address-card [address]="address" [customerDetails]="customerDetails" (updatedAddress)="loadCustomerAddresses()"></app-address-card>
+        </ng-template>
+      </div>
+      <div class="d-inline-block col-lg-5">
+        <ng-template ngFor let-address [ngForOf]="customerAddresses2">
+          <app-address-card [address]="address" [customerDetails]="customerDetails" (updatedAddress)="loadCustomerAddresses()"></app-address-card>
+        </ng-template>
+      </div>
+    </div>
+    <div class="row">
+      <div class="d-inline-block col-lg-5">
+        <div *ngIf="canCreate" class="padding">
+          <button class="btn btn-success" type="button" (click)="createNewAddress()">Create New Address</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!(customerAddresses1 && addressTypes && countries && states && provinces)">
+  Loading...
+</div>
+
+
+<!---->
+<!-- Add customer address modal -->
+<!---->
+<div class="modal fade h-100" id="addCustomerAddressModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg h-80" role="document">
+    <div class="modal-content h-100">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title" id="AggregationModalLabel"><span class="fa fa-tag"></span>Add Customer Address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="loadCustomerAddresses()"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body bg-white text-dark h-100" id="modal-body-75">
+        <div class="h-100" id="newAddress" *ngIf="newCustomerAddress && addressTypes && states && provinces && countries" >
+          <form #f="ngForm" novalidate>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name"
+                     required
+                     [(ngModel)]="newCustomerAddress.name" #name="ngModel" name="name">
+              <div *ngIf="(name.dirty) && !name.valid && name?.errors.required" [ngClass] = "'error'">
+                Name is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addressLine1">Address Line 1</label>
+              <input type="text" class="form-control" id="addressLine1"
+                     required
+                     [(ngModel)]="newCustomerAddress.addressLine1" #addressLine1="ngModel" name="addressLine1">
+              <div *ngIf="(addressLine1.dirty) && !addressLine1.valid && addressLine1?.errors.required" [ngClass] = "'error'">
+                Address is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addressLine2">Address Line 2</label>
+              <input type="text" class="form-control" id="addressLine2"
+                     [(ngModel)]="newCustomerAddress.addressLine2" #addressLine2="ngModel" name="addressLine2">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city"
+                       required
+                       [(ngModel)]="newCustomerAddress.city" #city="ngModel" name="city">
+                <div *ngIf="(city.dirty) && !city.valid && city?.errors.required" [ngClass] = "'error'">
+                  City is required.
+                </div>
+              </div>
+              <div *ngIf="newCustomerAddress.country === 'United States'" class="form-group">
+                <label for="state">State</label>
+                <select  #state="ngModel" name="state"
+                         required
+                         id="state" class="form-control select"
+                         [(ngModel)]="newCustomerAddress.state">
+                  <option *ngFor="let state of states" [ngValue]="state.value">{{state.value}}</option>
+                </select>
+                <div *ngIf="(state.dirty) && !state.valid && state?.errors.required" [ngClass] = "'error'">
+                  State is required.
+                </div>
+              </div>
+              <div *ngIf="newCustomerAddress.country === 'Canada'" class="form-group">
+                <label for="province">Province</label>
+                <select  #province="ngModel" name="province"
+                         required
+                         id="province" class="form-control select"
+                         [(ngModel)]="newCustomerAddress.state">
+                  <option *ngFor="let province of provinces" [ngValue]="province.value">{{province.value}}</option>
+                </select>
+                <div *ngIf="(province.dirty) && !province.valid && province?.errors.required" [ngClass] = "'error'">
+                  Province is required.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="zip">Zip Code</label>
+                <input type="text" class="form-control" id="zip"
+                       required
+                       [(ngModel)]="newCustomerAddress.zip" #zip="ngModel" name="zip">
+                <div *ngIf="zip.errors && f.submitted && !isValidFormSubmitted" [ngClass] = "'error'">
+                  <div *ngIf="zip?.errors.required">
+                    Zip code is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="country">Country</label>
+              <select  #country="ngModel" name="country"
+                       required
+                       id="country" class="form-control select"
+                       [(ngModel)]="newCustomerAddress.country">
+                <option *ngFor="let countryOption of countries" [ngValue]="countryOption">{{countryOption}}</option>
+              </select>
+              <div *ngIf="(country.dirty) && !country.valid && country?.errors.required" [ngClass] = "'error'">
+                Country is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="contactPhone">Contact Phone Number</label>
+              <input type="text" class="form-control" id="contactPhone"
+                     required
+                     [ngModel]="newCustomerAddress.contactPhone"
+                     (ngModelChange)="newCustomerAddress.contactPhone=$event"
+                     #contactPhone="ngModel" name="contactPhone">
+              <div *ngIf="(contactPhone.dirty) && !contactPhone.valid && contactPhone?.errors.required" [ngClass] = "'error'">
+                Contact phone number is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="extension">Extension</label>
+              <input type="text" class="form-control" id="extension"
+                     [(ngModel)]="newCustomerAddress.phoneExtension" #extension="ngModel" name="extension">
+            </div>
+            <div class="form-group">
+              <label for="addressType">Address Type</label>
+              <select  #addressType="ngModel" name="addressType"
+                       required
+                       id="addressType" class="form-control select"
+                       [(ngModel)]="newCustomerAddress.addressType">
+                <option *ngFor="let type of addressTypes" [ngValue]="type">{{type}}</option>
+              </select>
+              <div *ngIf="(addressType.dirty) && !addressType.valid && addressType?.errors.required" [ngClass] = "'error'">
+                Address type is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="additionalInfo">Additional Info</label>
+              <label for="additionalInfo">Additional Info</label>
+              <textarea
+                (change)="updateAdditionalInfo($event.target.value)"
+                id="additionalInfo" rows="3" style="width: 100%" maxlength="500"
+                name="additionalInfo"
+                [ngModel]="newCustomerAddress.additionalInfo">
+                {{newCustomerAddress.additionalInfo}}
+              </textarea>
+
+            </div>
+            <div class="padding">
+              &nbsp;
+              <button class="pull-right btn btn-success" [class.btn-grow]="f.valid"  [disabled]="!f.valid" (click)="addCustomerAddress()" type="button">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!---->
+<!--Success modal-->
+<!---->
+<div class="modal fade" tabindex="-1" role="dialog" id="successModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-info">
+        <h5 class="modal-title">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-white text-dark">
+        <p>{{successMessage}}</p>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary btn-grow" data-dismiss="modal"><span class="fa fa-close"></span>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

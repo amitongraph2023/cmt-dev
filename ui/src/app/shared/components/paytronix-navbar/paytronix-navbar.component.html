@@ -1,0 +1,11 @@
+<div id="paytronix-nav-wrapper">
+  <nav class="nav-tabs">
+    <ul class="nav nav-pills nav-justified">
+      <li class="nav-item nav-justified" *ngFor="let navLink of shownNavLinks">
+        <a class="nav-link" [routerLink]="navLink.route" routerLinkActive="active">
+          {{navLink.display}}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

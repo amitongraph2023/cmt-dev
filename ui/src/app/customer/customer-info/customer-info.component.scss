@@ -1,0 +1,56 @@
+html{
+  height:100%;
+}
+body{
+  height:100%;
+}
+.intro{
+  height:100%;
+}
+
+.left{
+  color: white;
+  height : 100%;
+  padding-left: 3em;
+  padding-bottom: 4em;
+}
+
+.right{
+  color : white;
+  height : 100%;
+  display : block;
+  padding-bottom: 4em;
+
+}
+
+
+li {
+  list-style: none;
+}
+
+.background-color {
+  background: #375a7f;
+}
+
+
+.padding {
+  padding: 0 0 1em;
+}
+
+.section {
+  padding-left: 1em;
+}
+
+
+
+.pass-reset {
+  margin: .1em;
+  //padding: .2em !important;
+  //height: auto;
+}
+
+
+.pending {
+  background-color: orangered;
+  color: white;
+}

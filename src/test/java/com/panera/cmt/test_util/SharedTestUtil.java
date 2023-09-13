@@ -1,0 +1,345 @@
+package com.panera.cmt.test_util;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.hamcrest.Matcher;
+
+import java.io.IOException;
+import java.util.*;
+
+import static com.panera.cmt.config.Constants.getDateFormat;
+import static com.panera.cmt.config.Constants.getDateTimeFormat;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+
+public class SharedTestUtil {
+
+    private final static int MAX_GUID_WITH_DASHES = 36,
+                             MAX_GUID_WITHOUT_DASHES = 32;
+
+    /**
+     * Converts supplied object to a JSON string
+     *
+     * @param obj The object to stringify
+     * @return JSON string of the supplied object
+     */
+    public static String asJsonString(final Object obj) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Map<String, String> buildIso3ResponseMap(String emailAddress, String firstName, String lastName, String... authGroups) {
+        Map<String, String> map = new HashMap<>();
+        if (firstName != null) {
+            map.put("firstname", firstName);
+        }
+        if (authGroups != null && authGroups[0] != null) {
+            if (authGroups[0].equals("")) {
+                map.put("role", "");
+            } else {
+                map.put("role", String.join(",", authGroups));
+            }
+        }
+        if (emailAddress != null) {
+            map.put("emailaddress", emailAddress);
+        }
+        if (lastName != null) {
+            map.put("lastname", lastName);
+        }
+
+        return map;
+    }
+
+    public static <T>  Object convertJSONStringToObject(String json, Class<T> objectClass) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        JavaTimeModule module = new JavaTimeModule();
+        mapper.registerModule(module);
+        return mapper.readValue(json, objectClass);
+    }
+
+    /**
+     * Creates a GUID
+     *
+     * @return A 36 character GUID
+     */
+    public static String createGUID() {
+        return createGUID(MAX_GUID_WITH_DASHES, true);
+    }
+    /**
+     * Creates a GUID
+     *
+     * @param length The length of the GUID (1-MAX_GUID_WITH_DASHES)
+     * @return A n character GUID
+     * @throws IllegalArgumentException Exception if the length is out of bounds
+     */
+    public static String createGUID(int length) throws IllegalArgumentException {
+        return createGUID(length, true);
+    }
+    /**
+     * Creates a GUID
+     *
+     * @param includeDashes Include dashes
+     * @return A 36 character GUID with/without dashes
+     */
+    public static String createGUID(boolean includeDashes) {
+        return createGUID((includeDashes) ? MAX_GUID_WITH_DASHES : MAX_GUID_WITHOUT_DASHES, includeDashes);
+    }
+    /**
+     * Creates a GUID
+     *
+     * @param length The length of the GUID (1-MAX_GUID_WITH_DASHES)
+     * @return A n character GUID with/without dashes
+     * @throws IllegalArgumentException Exception if the length is out of bounds
+     */
+    public static String createGUID(int length, boolean includeDashes) throws IllegalArgumentException {
+        if (length < 1) {
+            throw new IllegalArgumentException("length must be at least 1");
+        }
+
+        if (!includeDashes && length > MAX_GUID_WITHOUT_DASHES) {
+            throw new IllegalArgumentException("length must be no more than " + String.valueOf(MAX_GUID_WITHOUT_DASHES));
+        } else if (includeDashes && length > MAX_GUID_WITH_DASHES) {
+            throw new IllegalArgumentException("length must be no more than " + String.valueOf(MAX_GUID_WITH_DASHES));
+        }
+
+        String guid = UUID.randomUUID().toString().toUpperCase();
+
+        if (!includeDashes) {
+            guid = guid.replace("-", "");
+        }
+
+        return guid.substring(0, length - 1);
+    }
+
+    /**
+     * Hamcrest Matcher implementation to check if Date value matches
+     *
+     * @param value The Date value to check
+     * @return The matching status
+     */
+    public static Matcher<String> isDate(Date value) {
+        return org.hamcrest.core.Is.is(getDateFormat().format(value));
+    }
+
+    /**
+     * Hamcrest Matcher implementation to check if Date value matches
+     *
+     * @param value The Date value to check
+     * @return The matching status
+     */
+    public static Matcher<String> isDateTime(Date value) {
+        return org.hamcrest.core.Is.is(getDateTimeFormat().format(value));
+    }
+
+    /**
+     * Hamcrest Matcher implementation to check if Double value matches
+     *
+     * NOTE: Values need to be generated by SharedTestUtil.nextIntDouble()
+     *
+     * @param value The Double value to check
+     * @return The matching status
+     */
+    public static Matcher<Integer> isIntDouble(Double value) {
+        return org.hamcrest.core.Is.is(value.intValue());
+    }
+
+    /**
+     * Hamcrest Matcher implementation to check if Long value matches
+     *
+     * NOTE: Values need to be generated by SharedTestUtil.nextIntLong()
+     *
+     * @param value The Long value to check
+     * @return The matching status
+     */
+    public static Matcher<Integer> isIntLong(Long value) {
+        return org.hamcrest.core.Is.is(value.intValue());
+    }
+
+    /**
+     * ***************************************************************
+     * Returns the next pseudo-random, uniformly distributed enum value
+     *
+     * @param clazz the {@code Class} object of the enum type from which to return a constant
+     * @param <T> The enum type whose constant is to be returned
+     * @return the random enum constant of the specified enum type
+     */
+    public static <T extends Enum<T>> T nextEnum(Class<T> clazz) {
+        // Get the list of values
+        List<T> values = Collections.unmodifiableList(Arrays.asList(clazz.getEnumConstants()));
+
+        // Get the number of values
+        Integer size = values.size();
+
+        // Return a random value from the list
+        return values.get(new Random().nextInt(size));
+    }
+
+    /**
+     * Creates a random Double this is an int in disguise
+     *
+     * NOTE: Values need to be compared by SharedTestUtil.isIntDouble()
+     *
+     * @return A random Double
+     */
+    public static Double nextIntDouble() {
+        return (double) new Random().nextInt(Integer.SIZE - 1);
+    }
+
+    /**
+     * Creates a random Long this is an int in disguise
+     *
+     * NOTE: Values need to be compared by SharedTestUtil.isIntLong()
+     *
+     * @return A random Long
+     */
+    public static Long nextIntLong() {
+        return (long) new Random().nextInt(Integer.SIZE - 1);
+    }
+
+    /**
+     * Generates a date from the past
+     *
+     * @return Date in the past
+     */
+    public static Date pastDate() {
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.DATE, -1);
+        return date.getTime();
+    }
+
+    /**
+     * Creates a 20 character long randomly generated email address in the x@x.com format
+     *
+     * @return Random email address
+     * @throws IllegalArgumentException Minimum length error
+     */
+    public static String randomEmailAddress() throws IllegalArgumentException {
+        return randomEmailAddress(20);
+    }
+
+    /**
+     * Creates a randomly generated email address in the x@x.com format
+     *
+     * @param chars Length of the email address (including @ and .com)
+     * @return Random email address
+     * @throws IllegalArgumentException Minimum length error
+     */
+    public static String randomEmailAddress(int chars) throws IllegalArgumentException {
+        // Remove the count of '@' and '.com'
+        chars -= 5;
+
+        if (chars < 2) {
+            throw new IllegalArgumentException("Number of characters must be more than 7");
+        }
+
+        return randomAlphanumeric(Math.floorDiv(chars, 2)) + "@" + randomAlphanumeric(chars - Math.floorDiv(chars, 2)) + ".com";
+    }
+
+    /**
+     * Generates a random date in the years 2000-2050 (inclusive)
+     *
+     * @return Random date
+     */
+    public static Date randomDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.DATE, randomRange(1, 28));
+        cal.set(Calendar.MONTH, randomRange(0, 11));
+        cal.set(Calendar.YEAR, randomRange(2000, 2050));
+        return cal.getTime();
+    }
+
+    /**
+     * Generates a random date in the years 2000-2050 (inclusive) depending on date type
+     *
+     * @param dateType Type of date to create
+     * @return Random date
+     */
+    public static Date randomDate(DateType dateType) {
+        Calendar cal = Calendar.getInstance();
+
+        int minYear = (dateType == DateType.FUTURE) ? cal.get(Calendar.YEAR) + 1 : 2000;
+        int maxYear = (dateType == DateType.PAST) ? cal.get(Calendar.YEAR) - 1 : 2050;
+
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.DATE, randomRange(1, 28));
+        cal.set(Calendar.MONTH, randomRange(0, 11));
+        cal.set(Calendar.YEAR, randomRange(minYear, maxYear));
+        return cal.getTime();
+    }
+
+    /**
+     * Generates a random time/date in the years 2000-2050 (inclusive)
+     *
+     * @return Random date/time
+     */
+    public static Date randomDateTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, randomRange(0, 99));
+        cal.set(Calendar.SECOND, randomRange(0, 59));
+        cal.set(Calendar.MINUTE, randomRange(0, 59));
+        cal.set(Calendar.HOUR, randomRange(0, 23));
+        cal.set(Calendar.DATE, randomRange(1, 28));
+        cal.set(Calendar.MONTH, randomRange(0, 11));
+        cal.set(Calendar.YEAR, randomRange(2000, 2050));
+        return cal.getTime();
+    }
+
+    /**
+     * Generates a random time/date in the years 2000-2050 (inclusive) depending on date type
+     *
+     * @param dateType Type of date to create
+     * @return Random date/time
+     */
+    public static Date randomDateTime(DateType dateType) {
+        Calendar cal = Calendar.getInstance();
+
+        int minYear = (dateType == DateType.FUTURE) ? cal.get(Calendar.YEAR) + 1 : 2000;
+        int maxYear = (dateType == DateType.PAST) ? cal.get(Calendar.YEAR) - 1 : 2050;
+
+        cal.set(Calendar.MILLISECOND, randomRange(0, 99));
+        cal.set(Calendar.SECOND, randomRange(0, 59));
+        cal.set(Calendar.MINUTE, randomRange(0, 59));
+        cal.set(Calendar.HOUR, randomRange(0, 23));
+        cal.set(Calendar.DATE, randomRange(1, 28));
+        cal.set(Calendar.MONTH, randomRange(0, 11));
+        cal.set(Calendar.YEAR, randomRange(minYear, maxYear));
+        return cal.getTime();
+    }
+
+    /**
+     * Generates a random integer from the given range (inclusively)
+     *
+     * @param min The range's lower bounds (can be negative)
+     * @param max The range's upper bounds (can be negative)
+     * @return A random integer
+     * @throws IllegalArgumentException Max value must be greater than Min
+     */
+    public static int randomRange(int min, int max) throws IllegalArgumentException {
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+    /**
+     * Type of date to randomly create
+     */
+    public enum DateType {
+        FUTURE, PAST
+    }
+}
